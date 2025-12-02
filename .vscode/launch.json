@@ -5,14 +5,14 @@
             "type": "java",
             "name": "Main",
             "request": "launch",
-            "mainClass": "com.cmpe343.project.Main",
+            "mainClass": "Main",
             "projectName": "Project2-Group10_6d9e2f8b"
         },
         {
             "type": "java",
-            "name": "Run Contact App",
+            "name": "Main",
             "request": "launch",
-            "mainClass": "com.cmpe343.project.Main",
+            "mainClass": "Main",
             "projectName": "Project2-Group10"
         }
     ]
