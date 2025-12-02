@@ -1,6 +1,6 @@
-package com.cmpe343.project.util;
+package util;
 
-import com.cmpe343.project.db.DatabaseConnection;
+import db.DatabaseConnection;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;

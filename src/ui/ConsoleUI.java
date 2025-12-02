@@ -1,10 +1,10 @@
-package com.cmpe343.project.ui;
+package ui;
 
-import com.cmpe343.project.model.Contact;
-import com.cmpe343.project.model.Role;
-import com.cmpe343.project.model.User;
-import com.cmpe343.project.service.AuthenticationService;
-import com.cmpe343.project.service.ContactService;
+import model.Contact;
+import model.Role;
+import model.User;
+import service.AuthenticationService;
+import service.ContactService;
 
 import java.sql.Date;
 import java.util.List;

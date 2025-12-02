@@ -1,4 +1,4 @@
-package com.cmpe343.project.model;
+package model;
 
 public class Tester extends User {
 

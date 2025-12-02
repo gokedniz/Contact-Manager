@@ -1,6 +1,4 @@
-package com.cmpe343.project;
-
-import com.cmpe343.project.ui.ConsoleUI;
+import ui.ConsoleUI;
 
 public class Main {
     public static void main(String[] args) {

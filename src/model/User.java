@@ -1,4 +1,4 @@
-package com.cmpe343.project.model;
+package model;
 
 public abstract class User {
     private int id;

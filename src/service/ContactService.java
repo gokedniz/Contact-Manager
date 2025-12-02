@@ -1,9 +1,9 @@
-package com.cmpe343.project.service;
+package service;
 
-import com.cmpe343.project.dao.ContactDAO;
-import com.cmpe343.project.model.Contact;
-import com.cmpe343.project.model.Role;
-import com.cmpe343.project.model.User;
+import dao.ContactDAO;
+import model.Contact;
+import model.Role;
+import model.User;
 
 import java.util.List;
 

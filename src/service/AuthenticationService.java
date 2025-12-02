@@ -1,8 +1,8 @@
-package com.cmpe343.project.service;
+package service;
 
-import com.cmpe343.project.dao.UserDAO;
-import com.cmpe343.project.model.User;
-import com.cmpe343.project.util.PasswordUtil;
+import dao.UserDAO;
+import model.User;
+import util.PasswordUtil;
 
 public class AuthenticationService {
 

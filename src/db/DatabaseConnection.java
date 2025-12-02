@@ -1,4 +1,4 @@
-package com.cmpe343.project.db;
+package db;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

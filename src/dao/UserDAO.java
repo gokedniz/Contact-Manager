@@ -1,7 +1,7 @@
-package com.cmpe343.project.dao;
+package dao;
 
-import com.cmpe343.project.db.DatabaseConnection;
-import com.cmpe343.project.model.*;
+import db.DatabaseConnection;
+import model.*;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

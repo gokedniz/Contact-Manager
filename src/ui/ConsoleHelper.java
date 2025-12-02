@@ -1,4 +1,4 @@
-package com.cmpe343.project.ui;
+package ui;
 
 import java.sql.Date;
 import java.util.Scanner;
