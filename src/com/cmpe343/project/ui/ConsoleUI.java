@@ -79,6 +79,8 @@ public class ConsoleUI {
             helper.printMenuOption(7, "Undo Last Operation");
         }
 
+        helper.printMenuOption(8, "Change Password");
+
         helper.printMenuOption(0, "Logout");
 
         int choice = helper.readInt("Select an option");
@@ -123,6 +125,9 @@ public class ConsoleUI {
                 break;
             case 7:
                 helper.printInfo("Undo feature coming soon...");
+                break;
+            case 8:
+                handleChangePassword();
                 break;
             default:
                 helper.printError("Invalid option.");
@@ -347,6 +352,44 @@ public class ConsoleUI {
             helper.printSuccess("Contact deleted.");
         } else {
             helper.printError("Failed to delete contact (or access denied).");
+        }
+    }
+
+    private void handleChangePassword() {
+        helper.printTitle("Change Password");
+
+        String oldPass = helper.readString("Enter Old Password (0 to Cancel)");
+        if (oldPass.equals("0"))
+            return;
+
+        while (true) {
+            String newPass = helper.readString("Enter New Password (0 to Cancel)");
+            if (newPass.equals("0"))
+                return;
+
+            String confirmPass = helper.readString("Confirm New Password (0 to Cancel)");
+            if (confirmPass.equals("0"))
+                return;
+
+            if (!newPass.equals(confirmPass)) {
+                helper.printError("Passwords do not match. Please try again.");
+                continue;
+            }
+
+            int result = authService.changePassword(currentUser, oldPass, newPass);
+            if (result == 0) {
+                helper.printSuccess("Password changed successfully.");
+                return;
+            } else if (result == 1) {
+                helper.printError("Incorrect old password.");
+                return;
+            } else if (result == 2) {
+                helper.printError("New password cannot be the same as the old password.");
+                return;
+            } else {
+                helper.printError("Update failed due to database error.");
+                return;
+            }
         }
     }
 }
