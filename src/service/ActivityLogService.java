@@ -12,7 +12,7 @@ public class ActivityLogService {
         this.activityLogDAO = new ActivityLogDAO();
     }
 
-    public List<ActivityLog> getAllLogs() {
-        return activityLogDAO.getAllLogs();
+    public List<ActivityLog> getAllLogs(String usernameFilter, String actionFilter, String sortOrder) {
+        return activityLogDAO.getAllLogs(usernameFilter, actionFilter, sortOrder);
     }
 }

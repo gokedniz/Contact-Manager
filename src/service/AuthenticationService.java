@@ -41,4 +41,8 @@ public class AuthenticationService {
         boolean success = userDAO.updatePassword(user.getId(), newHash);
         return success ? 0 : 3; // 0=Success, 3=DB Error
     }
+
+    public boolean isUserExists(String username) {
+        return userDAO.getUserByUsername(username) != null;
+    }
 }

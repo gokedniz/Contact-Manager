@@ -41,7 +41,8 @@ public class ConsoleUI {
                 if (choice == 1) {
                     showLogin();
                     // Login sonrası ekranı temizlemek için döngü başa dönecek
-                    if(currentUser != null) helper.clearScreen();
+                    if (currentUser != null)
+                        helper.clearScreen();
                 } else if (choice == 0) {
                     running = false;
                     helper.printInfo("Goodbye!");
@@ -113,7 +114,8 @@ public class ConsoleUI {
     }
 
     private void handleMenuChoice(int choice) {
-        if (choice != 0) helper.clearScreen();
+        if (choice != 0)
+            helper.clearScreen();
 
         switch (choice) {
             case 0:
@@ -123,7 +125,8 @@ public class ConsoleUI {
                 break;
             case 1:
                 listContacts();
-                // listContacts kendi içinde döngüye ve bekletmeye sahip, ekstra bekletmeye gerek yok
+                // listContacts kendi içinde döngüye ve bekletmeye sahip, ekstra bekletmeye
+                // gerek yok
                 break;
             case 2:
                 handleSearch();
@@ -169,7 +172,7 @@ public class ConsoleUI {
     }
 
     private void handleEditById() {
-         if (hasPermission(Role.JUNIOR_DEVELOPER)) {
+        if (hasPermission(Role.JUNIOR_DEVELOPER)) {
             helper.printTitle("EDIT MODE (DIRECT ID)");
             int id = helper.readInt("Enter Contact ID to Edit");
             Contact c = contactService.getContactById(id);
@@ -192,11 +195,11 @@ public class ConsoleUI {
         Map<String, Object> stats = contactService.getStatistics();
 
         List<String[]> statData = new ArrayList<>();
-        statData.add(new String[]{"Total Contacts", String.valueOf(stats.get("Total Contacts"))});
-        statData.add(new String[]{"Contacts with Email", String.valueOf(stats.get("Contacts with Email"))});
-        statData.add(new String[]{"Contacts with Phone", String.valueOf(stats.get("Contacts with Phone"))});
+        statData.add(new String[] { "Total Contacts", String.valueOf(stats.get("Total Contacts")) });
+        statData.add(new String[] { "Contacts with Email", String.valueOf(stats.get("Contacts with Email")) });
+        statData.add(new String[] { "Contacts with Phone", String.valueOf(stats.get("Contacts with Phone")) });
 
-        helper.printTable(new String[]{"Metric", "Value"}, statData);
+        helper.printTable(new String[] { "Metric", "Value" }, statData);
 
         System.out.println();
         helper.printSectionHeader("Email Domain Distribution");
@@ -206,11 +209,11 @@ public class ConsoleUI {
 
         List<String[]> domainData = new ArrayList<>();
         if (domains.isEmpty()) {
-             domainData.add(new String[]{"No Data", "0"});
+            domainData.add(new String[] { "No Data", "0" });
         } else {
-            domains.forEach((domain, count) -> domainData.add(new String[]{domain, String.valueOf(count)}));
+            domains.forEach((domain, count) -> domainData.add(new String[] { domain, String.valueOf(count) }));
         }
-        helper.printTable(new String[]{"Domain", "Count"}, domainData);
+        helper.printTable(new String[] { "Domain", "Count" }, domainData);
 
         helper.pressEnterToContinue(); // İstatistikler okunsun diye beklettim
     }
@@ -221,18 +224,24 @@ public class ConsoleUI {
         String sortInput = helper.readString("Sort by (Enter for Default ID)");
 
         String sortBy = "id";
-        if (sortInput.equalsIgnoreCase("n")) sortBy = "name_asc";
-        else if (sortInput.equalsIgnoreCase("n-")) sortBy = "name_desc";
-        else if (sortInput.equalsIgnoreCase("s")) sortBy = "surname_asc";
-        else if (sortInput.equalsIgnoreCase("s-")) sortBy = "surname_desc";
-        else if (sortInput.equalsIgnoreCase("e")) sortBy = "email_asc";
-        else if (sortInput.equalsIgnoreCase("e-")) sortBy = "email_desc";
+        if (sortInput.equalsIgnoreCase("n"))
+            sortBy = "name_asc";
+        else if (sortInput.equalsIgnoreCase("n-"))
+            sortBy = "name_desc";
+        else if (sortInput.equalsIgnoreCase("s"))
+            sortBy = "surname_asc";
+        else if (sortInput.equalsIgnoreCase("s-"))
+            sortBy = "surname_desc";
+        else if (sortInput.equalsIgnoreCase("e"))
+            sortBy = "email_asc";
+        else if (sortInput.equalsIgnoreCase("e-"))
+            sortBy = "email_desc";
 
         List<Contact> contacts = contactService.getContactsSorted(sortBy);
 
         // Listeyi gösterirken ekran temizlenmişti zaten
         List<String[]> tableData = convertContactsToTableData(contacts);
-        String[] headers = {"ID", "Full Name", "Phone", "Email", "Nickname"};
+        String[] headers = { "ID", "Full Name", "Phone", "Email", "Nickname" };
 
         helper.printTable(headers, tableData);
         interactWithResults(contacts);
@@ -240,17 +249,72 @@ public class ConsoleUI {
 
     private void handleSearch() {
         helper.printTitle("SEARCH CONTACTS");
-        String query = helper.readString("Enter search term (Name, Phone, Email)");
-        helper.clearScreen(); // Arama sonucunu temiz sayfada göster
 
-        List<Contact> results = contactService.searchContacts(query);
+        System.out.println("Select fields to search in (comma separated, e.g. 1,3):");
+        System.out.println("1. First Name");
+        System.out.println("2. Last Name");
+        System.out.println("3. Phone");
+        System.out.println("4. Email");
+        System.out.println("5. All Fields (Default)");
+
+        List<String> fields = new ArrayList<>();
+
+        while (true) {
+            String fieldInput = helper.readString("Choice");
+
+            if (fieldInput.isEmpty()) {
+                fields.clear(); // Default to all
+                break;
+            }
+
+            String[] choices = fieldInput.split(",");
+            boolean valid = true;
+            fields.clear(); // Reset for new attempt
+
+            for (String choice : choices) {
+                String trimmed = choice.trim();
+                if (!trimmed.matches("[1-5]")) {
+                    valid = false;
+                    break;
+                }
+
+                switch (trimmed) {
+                    case "1":
+                        fields.add("first_name");
+                        break;
+                    case "2":
+                        fields.add("last_name");
+                        break;
+                    case "3":
+                        fields.add("phone_primary");
+                        break;
+                    case "4":
+                        fields.add("email");
+                        break;
+                    case "5":
+                        fields.clear();
+                        break; // Will default to all
+                }
+            }
+
+            if (valid) {
+                break;
+            } else {
+                helper.printError("Invalid selection. Please enter numbers 1-5 separated by commas.");
+            }
+        }
+
+        String query = helper.readString("Enter search term");
+        helper.clearScreen();
+
+        List<Contact> results = contactService.searchContacts(query, fields);
 
         if (results.isEmpty()) {
             helper.printWarning("No contacts found matching: " + query);
             helper.pressEnterToContinue();
         } else {
             helper.printSuccess("Found " + results.size() + " matches:");
-            String[] headers = {"ID", "Full Name", "Phone", "Email", "Nickname"};
+            String[] headers = { "ID", "Full Name", "Phone", "Email", "Nickname" };
             helper.printTable(headers, convertContactsToTableData(results));
             interactWithResults(results);
         }
@@ -259,24 +323,26 @@ public class ConsoleUI {
     private List<String[]> convertContactsToTableData(List<Contact> contacts) {
         List<String[]> data = new ArrayList<>();
         for (Contact c : contacts) {
-            data.add(new String[]{
-                String.valueOf(c.getId()),
-                c.getFirstName() + " " + c.getLastName(),
-                c.getPhonePrimary(),
-                c.getEmail() != null ? c.getEmail() : "",
-                c.getNickname() != null ? c.getNickname() : ""
+            data.add(new String[] {
+                    String.valueOf(c.getId()),
+                    c.getFirstName() + " " + c.getLastName(),
+                    c.getPhonePrimary(),
+                    c.getEmail() != null ? c.getEmail() : "",
+                    c.getNickname() != null ? c.getNickname() : ""
             });
         }
         return data;
     }
 
     private void interactWithResults(List<Contact> contacts) {
-        if (contacts.isEmpty()) return;
+        if (contacts.isEmpty())
+            return;
 
         while (true) {
             System.out.println();
             int id = helper.readInt("Enter Contact ID to View/Edit/Delete (0 to Back)");
-            if (id == 0) return;
+            if (id == 0)
+                return;
 
             Contact selected = contacts.stream().filter(c -> c.getId() == id).findFirst().orElse(null);
             if (selected == null) {
@@ -290,7 +356,7 @@ public class ConsoleUI {
 
             // Kişi detaylarını tekrar hatırlatmak için mini tablo
             List<String[]> singleData = convertContactsToTableData(List.of(selected));
-            helper.printTable(new String[]{"ID", "Full Name", "Phone", "Email", "Nick"}, singleData);
+            helper.printTable(new String[] { "ID", "Full Name", "Phone", "Email", "Nick" }, singleData);
 
             helper.printMenuHeader("ACTIONS");
 
@@ -309,7 +375,7 @@ public class ConsoleUI {
                 case 2:
                     if (hasPermission(Role.SENIOR_DEVELOPER)) {
                         String confirm = helper.readString("Are you sure you want to delete? (y/n)");
-                        if(confirm.equalsIgnoreCase("y")) {
+                        if (confirm.equalsIgnoreCase("y")) {
                             if (contactService.deleteContact(currentUser, selected.getId())) {
                                 helper.printSuccess("Contact deleted.");
                             } else {
@@ -322,17 +388,19 @@ public class ConsoleUI {
                     helper.pressEnterToContinue();
                     return;
                 case 0:
-                    // İptal deyince listeye geri dönsün, ekranı temizle ve tabloyu yeniden basmak gerekir
-                    // Ama basitlik adına listeyi tekrar basmıyoruz, kullanıcı 0'a basıp menüye dönecek.
+                    // İptal deyince listeye geri dönsün, ekranı temizle ve tabloyu yeniden basmak
+                    // gerekir
+                    // Ama basitlik adına listeyi tekrar basmıyoruz, kullanıcı 0'a basıp menüye
+                    // dönecek.
                     helper.clearScreen();
                     return;
-                default: helper.printError("Invalid option.");
+                default:
+                    helper.printError("Invalid option.");
             }
         }
     }
 
     private void editContact(Contact c) {
-        // ... (Bu metodun içi aynı, sadece başlıklar vs. helper ile basılıyor)
         if (!hasPermission(Role.JUNIOR_DEVELOPER)) {
             helper.printError("Access Denied.");
             return;
@@ -342,12 +410,48 @@ public class ConsoleUI {
         helper.printInfo("Press Enter to keep current value.");
 
         String first = helper.readString("First Name [" + c.getFirstName() + "]");
-        if (!first.isEmpty()) c.setFirstName(first);
-        // ... diğer alanlar aynı ...
-        String last = helper.readString("Last Name [" + c.getLastName() + "]");
-        if (!last.isEmpty()) c.setLastName(last);
+        if (!first.isEmpty())
+            c.setFirstName(first);
 
-        // Kısaltmak için diğer fieldları buraya yazmadım, önceki koddaki mantık aynı.
+        String middle = helper.readString("Middle Name [" + (c.getMiddleName() != null ? c.getMiddleName() : "") + "]");
+        if (!middle.isEmpty())
+            c.setMiddleName(middle);
+
+        String last = helper.readString("Last Name [" + c.getLastName() + "]");
+        if (!last.isEmpty())
+            c.setLastName(last);
+
+        String nick = helper.readString("Nickname [" + (c.getNickname() != null ? c.getNickname() : "") + "]");
+        if (!nick.isEmpty())
+            c.setNickname(nick);
+
+        String phone1 = helper.readString("Primary Phone [" + c.getPhonePrimary() + "]");
+        if (!phone1.isEmpty())
+            c.setPhonePrimary(phone1);
+
+        String phone2 = helper
+                .readString("Secondary Phone [" + (c.getPhoneSecondary() != null ? c.getPhoneSecondary() : "") + "]");
+        if (!phone2.isEmpty())
+            c.setPhoneSecondary(phone2);
+
+        String email = helper.readString("Email [" + (c.getEmail() != null ? c.getEmail() : "") + "]");
+        if (!email.isEmpty())
+            c.setEmail(email);
+
+        String linkedin = helper
+                .readString("LinkedIn [" + (c.getLinkedinUrl() != null ? c.getLinkedinUrl() : "") + "]");
+        if (!linkedin.isEmpty())
+            c.setLinkedinUrl(linkedin);
+
+        String birthStr = helper
+                .readString("Birth Date [" + (c.getBirthDate() != null ? c.getBirthDate() : "") + "] (YYYY-MM-DD)");
+        if (!birthStr.isEmpty()) {
+            try {
+                c.setBirthDate(Date.valueOf(birthStr));
+            } catch (IllegalArgumentException e) {
+                helper.printError("Invalid date format. Date not updated.");
+            }
+        }
 
         if (contactService.updateContact(currentUser, c)) {
             helper.printSuccess("Contact updated.");
@@ -379,16 +483,15 @@ public class ConsoleUI {
         // Tüm verileri tek seferde Constructor'a gönderiyoruz.
         // Boş girilen (Optional) alanlar için veritabanına 'null' gönderiyoruz.
         Contact contact = new Contact(
-            first,
-            middle.isEmpty() ? null : middle,
-            last,
-            nick.isEmpty() ? null : nick,
-            phone1,
-            phone2.isEmpty() ? null : phone2,
-            email.isEmpty() ? null : email,
-            linkedin.isEmpty() ? null : linkedin,
-            birth
-        );
+                first,
+                middle.isEmpty() ? null : middle,
+                last,
+                nick.isEmpty() ? null : nick,
+                phone1,
+                phone2.isEmpty() ? null : phone2,
+                email.isEmpty() ? null : email,
+                linkedin.isEmpty() ? null : linkedin,
+                birth);
 
         if (contactService.addContact(currentUser, contact)) {
             helper.printSuccess("Contact added successfully.");
@@ -413,13 +516,37 @@ public class ConsoleUI {
 
     private void handleChangePassword() {
         helper.printTitle("CHANGE PASSWORD");
-        // ... Şifre değiştirme mantığı aynı ...
-        // İşlem bitince return ediyor, yukarıdaki switch case sonundaki pressEnterToContinue çalışacak.
-        String oldPass = helper.readString("Enter Old Password (0 to Cancel)");
-        if (oldPass.equals("0")) return;
 
-        // ...
-        helper.printSuccess("Password changed successfully.");
+        String oldPass = helper.readString("Enter Old Password (0 to Cancel)");
+        if (oldPass.equals("0"))
+            return;
+
+        String newPass = helper.readString("Enter New Password");
+        if (newPass.isEmpty()) {
+            helper.printError("Password cannot be empty.");
+            return;
+        }
+
+        String confirmPass = helper.readString("Confirm New Password");
+        if (!newPass.equals(confirmPass)) {
+            helper.printError("Passwords do not match.");
+            return;
+        }
+
+        int result = authService.changePassword(currentUser, oldPass, newPass);
+        switch (result) {
+            case 0:
+                helper.printSuccess("Password changed successfully.");
+                break;
+            case 1:
+                helper.printError("Incorrect old password.");
+                break;
+            case 2:
+                helper.printError("New password cannot be the same as the old password.");
+                break;
+            default:
+                helper.printError("Database error occurred.");
+        }
     }
 
     private void showActivityLogs() {
@@ -429,25 +556,64 @@ public class ConsoleUI {
         }
 
         helper.printTitle("Activity Logs");
-        List<model.ActivityLog> logs = activityLogService.getAllLogs();
+
+        String usernameFilter;
+        while (true) {
+            usernameFilter = helper.readString("Filter by Username (Enter for All)");
+            if (usernameFilter.isEmpty())
+                break;
+
+            if (authService.isUserExists(usernameFilter)) {
+                break;
+            }
+            helper.printError("User not found: " + usernameFilter);
+        }
+
+        String actionFilter;
+        while (true) {
+            actionFilter = helper.readString("Filter by Action [LOGIN, ADD, UPDATE, DELETE] (Enter for All)");
+            if (actionFilter.isEmpty())
+                break;
+
+            String upper = actionFilter.toUpperCase();
+            if (upper.equals("LOGIN") || upper.equals("ADD") || upper.equals("UPDATE") || upper.equals("DELETE")) {
+                actionFilter = upper;
+                break;
+            }
+            helper.printError("Invalid action type. Please try again.");
+        }
+
+        String sortOrder = "DESC"; // Default Newest
+        while (true) {
+            String sortInput = helper.readString("Show [N]ewest first or [O]ldest first? (Default: Newest)");
+            if (sortInput.isEmpty() || sortInput.equalsIgnoreCase("N")) {
+                sortOrder = "DESC";
+                break;
+            } else if (sortInput.equalsIgnoreCase("O")) {
+                sortOrder = "ASC";
+                break;
+            }
+            helper.printError("Invalid choice. Please enter 'N' or 'O'.");
+        }
+
+        List<model.ActivityLog> logs = activityLogService.getAllLogs(usernameFilter, actionFilter, sortOrder);
 
         if (logs.isEmpty()) {
             helper.printInfo("No activity logs found.");
         } else {
-            System.out.printf("%-5s %-20s %-15s %-10s %-30s %-10s%n", "ID", "Timestamp", "Username", "User ID",
-                    "Action", "Details");
-            System.out.println(
-                    "-----------------------------------------------------------------------------------------------");
+            List<String[]> tableData = new ArrayList<>();
             for (model.ActivityLog log : logs) {
-                System.out.printf("%-5d %-20s %-15s %-10d %-30s %-10s%n",
-                        log.getLogId(),
-                        log.getTimestamp(),
+                tableData.add(new String[] {
+                        String.valueOf(log.getLogId()),
+                        String.valueOf(log.getTimestamp()),
                         log.getUsername(),
-                        log.getUserId(),
+                        String.valueOf(log.getUserId()),
                         log.getActionType(),
-                        log.getDetails());
+                        log.getDetails()
+                });
             }
+            String[] headers = { "ID", "Timestamp", "Username", "User ID", "Action", "Details" };
+            helper.printTable(headers, tableData);
         }
-        helper.readString("\nPress Enter to continue");
     }
 }

@@ -28,6 +28,10 @@ public class ContactService {
         return contactDAO.searchContacts(query);
     }
 
+    public List<Contact> searchContacts(String query, List<String> fields) {
+        return contactDAO.searchContacts(query, fields);
+    }
+
     public List<Contact> getContactsSorted(String sortBy) {
         List<Contact> contacts = contactDAO.getAllContacts();
         switch (sortBy.toLowerCase()) {

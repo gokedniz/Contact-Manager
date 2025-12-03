@@ -76,16 +76,33 @@ public class ContactDAO {
     }
 
     public List<Contact> searchContacts(String queryStr) {
+        return searchContacts(queryStr, null);
+    }
+
+    public List<Contact> searchContacts(String queryStr, List<String> fields) {
         List<Contact> contacts = new ArrayList<>();
-        String sql = "SELECT * FROM contacts WHERE first_name LIKE ? OR last_name LIKE ? OR phone_primary LIKE ? OR email LIKE ?";
+        if (fields == null || fields.isEmpty()) {
+            fields = new ArrayList<>();
+            fields.add("first_name");
+            fields.add("last_name");
+            fields.add("phone_primary");
+            fields.add("email");
+        }
+
+        StringBuilder sqlBuilder = new StringBuilder("SELECT * FROM contacts WHERE ");
+        for (int i = 0; i < fields.size(); i++) {
+            if (i > 0)
+                sqlBuilder.append(" OR ");
+            sqlBuilder.append(fields.get(i)).append(" LIKE ?");
+        }
+
         try (Connection conn = DatabaseConnection.getInstance().getConnection();
-                PreparedStatement stmt = conn.prepareStatement(sql)) {
+                PreparedStatement stmt = conn.prepareStatement(sqlBuilder.toString())) {
 
             String likeQuery = "%" + queryStr + "%";
-            stmt.setString(1, likeQuery);
-            stmt.setString(2, likeQuery);
-            stmt.setString(3, likeQuery);
-            stmt.setString(4, likeQuery);
+            for (int i = 0; i < fields.size(); i++) {
+                stmt.setString(i + 1, likeQuery);
+            }
 
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {

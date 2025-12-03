@@ -45,29 +45,51 @@ public class ActivityLogDAO {
         }
     }
 
-    public List<ActivityLog> getAllLogs() {
+    public List<ActivityLog> getAllLogs(String usernameFilter, String actionFilter, String sortOrder) {
         List<ActivityLog> logs = new ArrayList<>();
-        String query = "SELECT l.log_id, l.user_id, l.action_type, l.details, l.timestamp, u.username " +
-                "FROM activity_logs l " +
-                "LEFT JOIN users u ON l.user_id = u.user_id " +
-                "ORDER BY l.timestamp DESC";
+        StringBuilder queryBuilder = new StringBuilder(
+                "SELECT l.log_id, l.user_id, l.action_type, l.details, l.timestamp, u.username " +
+                        "FROM activity_logs l " +
+                        "LEFT JOIN users u ON l.user_id = u.user_id " +
+                        "WHERE 1=1 ");
+
+        List<Object> params = new ArrayList<>();
+
+        if (usernameFilter != null && !usernameFilter.trim().isEmpty()) {
+            queryBuilder.append("AND u.username LIKE ? ");
+            params.add("%" + usernameFilter.trim() + "%");
+        }
+
+        if (actionFilter != null && !actionFilter.trim().isEmpty()) {
+            queryBuilder.append("AND l.action_type LIKE ? ");
+            params.add("%" + actionFilter.trim() + "%");
+        }
+
+        String sort = (sortOrder != null && sortOrder.equalsIgnoreCase("ASC")) ? "ASC" : "DESC";
+        queryBuilder.append("ORDER BY l.log_id ").append(sort);
+
         try (Connection conn = DatabaseConnection.getInstance().getConnection();
-                PreparedStatement stmt = conn.prepareStatement(query);
-                ResultSet rs = stmt.executeQuery()) {
+                PreparedStatement stmt = conn.prepareStatement(queryBuilder.toString())) {
 
-            while (rs.next()) {
-                String username = rs.getString("username");
-                if (username == null) {
-                    username = "Unknown/System";
+            for (int i = 0; i < params.size(); i++) {
+                stmt.setObject(i + 1, params.get(i));
+            }
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    String username = rs.getString("username");
+                    if (username == null) {
+                        username = "Unknown/System";
+                    }
+
+                    logs.add(new ActivityLog(
+                            rs.getInt("log_id"),
+                            rs.getInt("user_id"),
+                            username,
+                            rs.getString("action_type"),
+                            rs.getString("details"),
+                            rs.getTimestamp("timestamp")));
                 }
-
-                logs.add(new ActivityLog(
-                        rs.getInt("log_id"),
-                        rs.getInt("user_id"),
-                        username,
-                        rs.getString("action_type"),
-                        rs.getString("details"),
-                        rs.getTimestamp("timestamp")));
             }
         } catch (SQLException e) {
             e.printStackTrace();
