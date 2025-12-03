@@ -9,17 +9,24 @@ import java.util.List;
 
 public class ContactDAO {
 
-    public void addContact(Contact contact) {
+    public int addContact(Contact contact) {
         String query = "INSERT INTO contacts (first_name, middle_name, last_name, nickname, phone_primary, phone_secondary, email, linkedin_url, birth_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (Connection conn = DatabaseConnection.getInstance().getConnection();
-                PreparedStatement stmt = conn.prepareStatement(query)) {
+                PreparedStatement stmt = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
 
             setContactStatement(stmt, contact);
             stmt.executeUpdate();
-            System.out.println("Contact added successfully.");
+            try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    int id = generatedKeys.getInt(1);
+                    System.out.println("Contact added successfully with ID: " + id);
+                    return id;
+                }
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return -1;
     }
 
     public List<Contact> getAllContacts() {

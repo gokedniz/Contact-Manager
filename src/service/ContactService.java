@@ -10,9 +10,13 @@ import java.util.List;
 public class ContactService {
 
     private ContactDAO contactDAO;
+    private dao.ActivityLogDAO activityLogDAO;
+    private command.CommandManager commandManager;
 
     public ContactService() {
         this.contactDAO = new ContactDAO();
+        this.activityLogDAO = new dao.ActivityLogDAO();
+        this.commandManager = new command.CommandManager();
     }
 
     public List<Contact> getAllContacts() {
@@ -95,7 +99,7 @@ public class ContactService {
             System.out.println("ACCESS DENIED: Testers cannot add contacts.");
             return false;
         }
-        contactDAO.addContact(contact);
+        commandManager.executeCommand(new command.AddContactCommand(contactDAO, activityLogDAO, contact, user.getId()));
         return true;
     }
 
@@ -107,9 +111,6 @@ public class ContactService {
 
         if (user.getRole() == Role.JUNIOR_DEVELOPER) {
             // Junior can only update names.
-            // We need to fetch the existing contact to preserve other fields,
-            // OR we assume the UI only sends updated name fields.
-            // For safety, let's fetch original and only apply name changes.
             Contact original = contactDAO.getContactById(contact.getId());
             if (original != null) {
                 original.setFirstName(contact.getFirstName());
@@ -117,7 +118,9 @@ public class ContactService {
                 original.setLastName(contact.getLastName());
                 original.setNickname(contact.getNickname());
                 // Do not update phone, email, etc.
-                contactDAO.updateContact(original);
+
+                commandManager.executeCommand(
+                        new command.UpdateContactCommand(contactDAO, activityLogDAO, original, user.getId()));
                 System.out.println("Junior Developer update applied (Names only).");
                 return true;
             }
@@ -125,7 +128,8 @@ public class ContactService {
         }
 
         // Senior and Manager can update everything
-        contactDAO.updateContact(contact);
+        commandManager
+                .executeCommand(new command.UpdateContactCommand(contactDAO, activityLogDAO, contact, user.getId()));
         return true;
     }
 
@@ -134,7 +138,12 @@ public class ContactService {
             System.out.println("ACCESS DENIED: You do not have permission to delete contacts.");
             return false;
         }
-        contactDAO.deleteContact(contactId);
+        commandManager
+                .executeCommand(new command.DeleteContactCommand(contactDAO, activityLogDAO, contactId, user.getId()));
         return true;
+    }
+
+    public void undoLastAction() {
+        commandManager.undo();
     }
 }

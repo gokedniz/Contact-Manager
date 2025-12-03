@@ -13,12 +13,14 @@ public class ConsoleUI {
     private ConsoleHelper helper;
     private AuthenticationService authService;
     private ContactService contactService;
+    private service.ActivityLogService activityLogService;
     private User currentUser;
 
     public ConsoleUI() {
         this.helper = new ConsoleHelper();
         this.authService = new AuthenticationService();
         this.contactService = new ContactService();
+        this.activityLogService = new service.ActivityLogService();
     }
 
     public void start() {
@@ -76,10 +78,17 @@ public class ConsoleUI {
         }
         if (hasPermission(Role.MANAGER)) {
             helper.printMenuOption(6, "View Statistics");
+        }
+
+        if (hasPermission(Role.JUNIOR_DEVELOPER)) {
             helper.printMenuOption(7, "Undo Last Operation");
         }
 
         helper.printMenuOption(8, "Change Password");
+
+        if (hasPermission(Role.MANAGER)) {
+            helper.printMenuOption(9, "View Activity Logs");
+        }
 
         helper.printMenuOption(0, "Logout");
 
@@ -124,10 +133,18 @@ public class ConsoleUI {
                 showStatistics();
                 break;
             case 7:
-                helper.printInfo("Undo feature coming soon...");
+                if (hasPermission(Role.JUNIOR_DEVELOPER)) {
+                    contactService.undoLastAction();
+                    helper.printSuccess("Undo operation executed.");
+                } else {
+                    helper.printError("Access Denied.");
+                }
                 break;
             case 8:
                 handleChangePassword();
+                break;
+            case 9:
+                showActivityLogs();
                 break;
             default:
                 helper.printError("Invalid option.");
@@ -391,5 +408,34 @@ public class ConsoleUI {
                 return;
             }
         }
+    }
+
+    private void showActivityLogs() {
+        if (!hasPermission(Role.MANAGER)) {
+            helper.printError("Access Denied.");
+            return;
+        }
+
+        helper.printTitle("Activity Logs");
+        List<model.ActivityLog> logs = activityLogService.getAllLogs();
+
+        if (logs.isEmpty()) {
+            helper.printInfo("No activity logs found.");
+        } else {
+            System.out.printf("%-5s %-20s %-15s %-10s %-30s %-10s%n", "ID", "Timestamp", "Username", "User ID",
+                    "Action", "Details");
+            System.out.println(
+                    "-----------------------------------------------------------------------------------------------");
+            for (model.ActivityLog log : logs) {
+                System.out.printf("%-5d %-20s %-15s %-10d %-30s %-10s%n",
+                        log.getLogId(),
+                        log.getTimestamp(),
+                        log.getUsername(),
+                        log.getUserId(),
+                        log.getActionType(),
+                        log.getDetails());
+            }
+        }
+        helper.readString("\nPress Enter to continue");
     }
 }

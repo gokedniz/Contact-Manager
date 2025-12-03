@@ -7,9 +7,11 @@ import util.PasswordUtil;
 public class AuthenticationService {
 
     private UserDAO userDAO;
+    private dao.ActivityLogDAO activityLogDAO;
 
     public AuthenticationService() {
         this.userDAO = new UserDAO();
+        this.activityLogDAO = new dao.ActivityLogDAO();
     }
 
     public User login(String username, String password) {
@@ -18,6 +20,7 @@ public class AuthenticationService {
         if (user != null) {
             String inputHash = PasswordUtil.hashPassword(password);
             if (inputHash.equals(user.getPasswordHash())) {
+                activityLogDAO.logAction(user.getId(), "LOGIN", "User logged in successfully.");
                 return user;
             }
         }
