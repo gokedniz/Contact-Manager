@@ -4,7 +4,10 @@ package model;
  * Abstract class representing a user in the contact management system.
  * Contains common attributes and methods for all user roles.
  * 
- * <p>Subclasses must implement the showMenu method to display role-specific menu options.</p>
+ * <p>
+ * Subclasses must implement the showMenu method to display role-specific menu
+ * options.
+ * </p>
  * 
  * @author Group 10
  */
@@ -19,12 +22,12 @@ public abstract class User {
     /**
      * Constructs a new User with the specified details.
      * 
-     * @param id            The unique identifier for the user.
-     * @param username      The username of the user.
-     * @param firstName     The first name of the user.
-     * @param lastName      The last name of the user.
-     * @param passwordHash  The hashed password of the user.
-     * @param role          The role of the user.
+     * @param id           The unique identifier for the user.
+     * @param username     The username of the user.
+     * @param firstName    The first name of the user.
+     * @param lastName     The last name of the user.
+     * @param passwordHash The hashed password of the user.
+     * @param role         The role of the user.
      */
     public User(int id, String username, String firstName, String lastName, String passwordHash, Role role) {
         this.id = id;
@@ -34,6 +37,7 @@ public abstract class User {
         this.passwordHash = passwordHash;
         this.role = role;
     }
+
     /**
      * Gets the unique identifier of the user.
      * 
@@ -42,6 +46,11 @@ public abstract class User {
     public int getId() {
         return id;
     }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
     /**
      * Gets the username of the user.
      * 
@@ -50,6 +59,7 @@ public abstract class User {
     public String getUsername() {
         return username;
     }
+
     /**
      * Gets the first name of the user.
      * 
@@ -58,6 +68,7 @@ public abstract class User {
     public String getFirstName() {
         return firstName;
     }
+
     /**
      * Gets the last name of the user.
      * 
@@ -66,6 +77,7 @@ public abstract class User {
     public String getLastName() {
         return lastName;
     }
+
     /**
      * Gets the hashed password of the user.
      * 
@@ -74,6 +86,7 @@ public abstract class User {
     public String getPasswordHash() {
         return passwordHash;
     }
+
     /**
      * Gets the role of the user.
      * 
@@ -82,12 +95,14 @@ public abstract class User {
     public Role getRole() {
         return role;
     }
+
     // Abstract method to get permissions or menu options could be added here
     /**
      * Displays the menu options available to the user based on their role.
      * Subclasses must provide their own implementation.
      */
     public abstract void showMenu();
+
     /**
      * Returns a string representation of the user.
      * 

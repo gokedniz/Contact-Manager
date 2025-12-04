@@ -96,4 +96,18 @@ public class ActivityLogDAO {
         }
         return logs;
     }
+
+    public void deleteLogsByUserId(int userId) {
+        String query = "DELETE FROM activity_logs WHERE user_id = ?";
+        try (Connection conn = DatabaseConnection.getInstance().getConnection();
+                PreparedStatement stmt = conn.prepareStatement(query)) {
+
+            stmt.setInt(1, userId);
+            stmt.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.err.println("Failed to delete activity logs for user ID: " + userId);
+        }
+    }
 }

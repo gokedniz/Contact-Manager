@@ -8,10 +8,12 @@ public class AuthenticationService {
 
     private UserDAO userDAO;
     private dao.ActivityLogDAO activityLogDAO;
+    private command.CommandManager commandManager;
 
     public AuthenticationService() {
         this.userDAO = new UserDAO();
         this.activityLogDAO = new dao.ActivityLogDAO();
+        this.commandManager = command.CommandManager.getInstance();
     }
 
     public User login(String username, String password) {
@@ -80,12 +82,9 @@ public class AuthenticationService {
                 return false;
         }
 
-        if (userDAO.addUser(newUser, passwordHash)) {
-            activityLogDAO.logAction(currentUser.getId(), "ADD_USER",
-                    "Created new user: " + username + " with role: " + role);
-            return true;
-        }
-        return false;
+        commandManager.executeCommand(
+                new command.AddUserCommand(userDAO, activityLogDAO, newUser, passwordHash, currentUser.getId()));
+        return true;
     }
 
     public java.util.List<User> getAllUsers() {
@@ -102,10 +101,12 @@ public class AuthenticationService {
     }
 
     public boolean deleteUser(User currentUser, int userId) {
-        if (userDAO.deleteUser(userId)) {
-            activityLogDAO.logAction(currentUser.getId(), "DELETE_USER", "Deleted user ID: " + userId);
-            return true;
-        }
-        return false;
+        commandManager.executeCommand(
+                new command.DeleteUserCommand(userDAO, activityLogDAO, userId, currentUser.getId()));
+        return true;
+    }
+
+    public void undoLastAction() {
+        commandManager.undo();
     }
 }

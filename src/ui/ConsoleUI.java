@@ -483,7 +483,6 @@ public class ConsoleUI {
         helper.printTitle("ADD NEW CONTACT");
 
         // Verileri kullanıcıdan alıyoruz
-        // Verileri kullanıcıdan alıyoruz
         String first = helper.readRequiredString("First Name");
         String middle = helper.readString("Middle Name (Optional)");
         String last = helper.readRequiredString("Last Name");
@@ -494,7 +493,6 @@ public class ConsoleUI {
         String linkedin = helper.readString("LinkedIn (Optional)");
         Date birth = helper.readDate("Birth Date (Optional)");
 
-        // HATA VEREN KISIM YERİNE BUNU KULLAN:
         // Tüm verileri tek seferde Constructor'a gönderiyoruz.
         // Boş girilen (Optional) alanlar için veritabanına 'null' gönderiyoruz.
         Contact contact = new Contact(
@@ -503,8 +501,8 @@ public class ConsoleUI {
                 last,
                 nick.isEmpty() ? null : nick,
                 phone1,
-                phone2.isEmpty() ? null : phone2,
-                email.isEmpty() ? null : email,
+                phone2, // readPhone returns null if optional and empty
+                email, // readEmail returns null if optional and empty
                 linkedin.isEmpty() ? null : linkedin,
                 birth);
 

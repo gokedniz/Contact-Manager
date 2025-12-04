@@ -16,7 +16,7 @@ public class ContactService {
     public ContactService() {
         this.contactDAO = new ContactDAO();
         this.activityLogDAO = new dao.ActivityLogDAO();
-        this.commandManager = new command.CommandManager();
+        this.commandManager = command.CommandManager.getInstance();
     }
 
     public List<Contact> getAllContacts() {
