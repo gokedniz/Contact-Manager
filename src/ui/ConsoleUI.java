@@ -58,7 +58,6 @@ public class ConsoleUI {
     private void showLogin() {
         helper.clearScreen(); // Login ekranına girince temizle
         helper.printTitle("SYSTEM LOGIN");
-        helper.printTitle("SYSTEM LOGIN");
         String username = helper.readRequiredString("Username");
         String password = helper.readRequiredString("Password");
 
