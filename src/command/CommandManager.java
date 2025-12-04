@@ -21,12 +21,13 @@ public class CommandManager {
         history.push(command);
     }
 
-    public void undo() {
+    public boolean undo() {
         if (!history.isEmpty()) {
             Command command = history.pop();
             command.undo();
+            return true;
         } else {
-            System.out.println("Nothing to undo.");
+            return false;
         }
     }
 }

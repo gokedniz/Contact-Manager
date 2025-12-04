@@ -147,7 +147,7 @@ public class ContactService {
         return true;
     }
 
-    public void undoLastAction() {
-        commandManager.undo();
+    public boolean undoLastAction() {
+        return commandManager.undo();
     }
 }

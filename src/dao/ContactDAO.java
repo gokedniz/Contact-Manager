@@ -96,6 +96,9 @@ public class ContactDAO {
             sqlBuilder.append(fields.get(i)).append(" LIKE ?");
         }
 
+        // Add sorting
+        sqlBuilder.append(" ORDER BY first_name ASC, last_name ASC");
+
         try (Connection conn = DatabaseConnection.getInstance().getConnection();
                 PreparedStatement stmt = conn.prepareStatement(sqlBuilder.toString())) {
 

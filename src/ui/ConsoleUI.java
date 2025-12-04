@@ -84,24 +84,16 @@ public class ConsoleUI {
         // --- 1. SEÇENEKLERİ BELİRLE VE YAZDIR ---
 
         // Herkes için ortak
-        helper.printMenuOption(displayNum++, "List Contacts");
+        helper.printMenuOption(displayNum++, "List Contacts (Edit/Delete)");
         currentMenuActions.add(1); // Orijinal Action ID: 1
 
-        helper.printMenuOption(displayNum++, "Search Contacts");
+        helper.printMenuOption(displayNum++, "Search Contacts (Edit/Delete)");
         currentMenuActions.add(2); // Orijinal Action ID: 2
 
         // Role Özel Seçenekler
         if (hasPermission(Role.SENIOR_DEVELOPER)) {
             helper.printMenuOption(displayNum++, "Add Contact");
             currentMenuActions.add(3);
-        }
-        if (hasPermission(Role.JUNIOR_DEVELOPER)) {
-            helper.printMenuOption(displayNum++, "Edit Contact (Direct ID)");
-            currentMenuActions.add(4);
-        }
-        if (hasPermission(Role.SENIOR_DEVELOPER)) {
-            helper.printMenuOption(displayNum++, "Delete Contact (Direct ID)");
-            currentMenuActions.add(5);
         }
         if (hasPermission(Role.MANAGER)) {
             helper.printMenuOption(displayNum++, "View Statistics");
@@ -119,6 +111,12 @@ public class ConsoleUI {
         if (hasPermission(Role.MANAGER)) {
             helper.printMenuOption(displayNum++, "View Activity Logs");
             currentMenuActions.add(9);
+
+            helper.printMenuOption(displayNum++, "Add New User");
+            currentMenuActions.add(10);
+
+            helper.printMenuOption(displayNum++, "Manage Users");
+            currentMenuActions.add(11);
         }
 
         // Logout her zaman en sonda ve 0 numara olsun
@@ -166,22 +164,19 @@ public class ConsoleUI {
                 addContact();
                 helper.pressEnterToContinue(); // Ekleme bitti, sonucu görsün kullanıcı
                 break;
-            case 4:
-                handleEditById();
-                helper.pressEnterToContinue();
-                break;
-            case 5:
-                deleteContact();
-                helper.pressEnterToContinue();
-                break;
+            // case 4 (Edit Direct ID) removed
+            // case 5 (Delete Direct ID) removed
             case 6:
                 showStatistics();
                 // İstatistik kendi içinde bekletmeye sahip
                 break;
             case 7:
                 if (hasPermission(Role.JUNIOR_DEVELOPER)) {
-                    contactService.undoLastAction();
-                    helper.printSuccess("Undo operation executed.");
+                    if (contactService.undoLastAction()) {
+                        helper.printSuccess("Undo operation executed.");
+                    } else {
+                        helper.printError("Nothing to undo.");
+                    }
                     helper.pressEnterToContinue();
                 } else {
                     helper.printError("Access Denied.");
@@ -208,19 +203,6 @@ public class ConsoleUI {
                 helper.printError("Invalid option.");
                 helper.pressEnterToContinue();
         }
-    }
-
-    private void handleEditById() {
-        if (hasPermission(Role.JUNIOR_DEVELOPER)) {
-            helper.printTitle("EDIT MODE (DIRECT ID)");
-            int id = helper.readInt("Enter Contact ID to Edit");
-            Contact c = contactService.getContactById(id);
-            if (c != null)
-                editContact(c);
-            else
-                helper.printError("Contact not found.");
-        } else
-            helper.printError("Access Denied.");
     }
 
     private void showStatistics() {
@@ -541,20 +523,6 @@ public class ConsoleUI {
         }
     }
 
-    private void deleteContact() {
-        if (!hasPermission(Role.SENIOR_DEVELOPER)) {
-            helper.printError("Access Denied.");
-            return;
-        }
-        helper.printTitle("DELETE CONTACT");
-        int id = helper.readInt("Enter Contact ID to delete");
-        if (contactService.deleteContact(currentUser, id)) {
-            helper.printSuccess("Contact deleted.");
-        } else {
-            helper.printError("Failed to delete contact (or access denied).");
-        }
-    }
-
     private void handleChangePassword() {
         helper.printTitle("CHANGE PASSWORD");
 
@@ -737,14 +705,14 @@ public class ConsoleUI {
         }
 
         helper.printSectionHeader("SELECTED: " + selectedUser.getUsername());
-        helper.printMenuOption(1, "Edit Role");
+        helper.printMenuOption(1, "Edit User");
         helper.printMenuOption(2, "Delete User");
         helper.printMenuOption(0, "Cancel");
 
         int action = helper.readInt("Action");
         switch (action) {
             case 1:
-                editUserRole(selectedUser);
+                editUser(selectedUser);
                 break;
             case 2:
                 deleteUser(selectedUser);
@@ -756,69 +724,79 @@ public class ConsoleUI {
         }
     }
 
-    private void editUserRole(User user) {
+    private void editUser(User user) {
+        helper.printTitle("EDIT USER: " + user.getUsername());
+        helper.printInfo("Press Enter to keep current value.");
+
+        String newUsername = helper.readString("Username [" + user.getUsername() + "]");
+        String newFirstName = helper.readString("First Name [" + user.getFirstName() + "]");
+        String newLastName = helper.readString("Last Name [" + user.getLastName() + "]");
+        String newPassword = helper.readString("New Password (Leave empty to keep current)");
+
         System.out.println("Current Role: " + user.getRole());
-        System.out.println("Select New Role:");
+        System.out.println("Select New Role (Enter to keep current):");
         System.out.println("1. Tester");
         System.out.println("2. Junior Developer");
         System.out.println("3. Senior Developer");
         System.out.println("4. Manager");
 
-        int roleChoice = helper.readInt("Role Choice");
-        Role newRole = null;
-        switch (roleChoice) {
-            case 1:
-                newRole = Role.TESTER;
-                break;
-            case 2:
-                newRole = Role.JUNIOR_DEVELOPER;
-                break;
-            case 3:
-                newRole = Role.SENIOR_DEVELOPER;
-                break;
-            case 4:
-                newRole = Role.MANAGER;
-                break;
-            default:
-                helper.printError("Invalid role selection.");
-                return;
+        String roleInput = helper.readString("Role Choice");
+        Role newRole = user.getRole(); // Default to current
+
+        if (!roleInput.isEmpty()) {
+            try {
+                int roleChoice = Integer.parseInt(roleInput);
+                switch (roleChoice) {
+                    case 1:
+                        newRole = Role.TESTER;
+                        break;
+                    case 2:
+                        newRole = Role.JUNIOR_DEVELOPER;
+                        break;
+                    case 3:
+                        newRole = Role.SENIOR_DEVELOPER;
+                        break;
+                    case 4:
+                        newRole = Role.MANAGER;
+                        break;
+                    default:
+                        helper.printError("Invalid role selection. Keeping current role.");
+                }
+            } catch (NumberFormatException e) {
+                helper.printError("Invalid input. Keeping current role.");
+            }
         }
 
-        // Create a new user object with updated role (simulating update)
-        // Since User classes are specific, we might need to recreate the object or just
-        // update DB based on ID.
-        // Our DAO updateUser takes a User object. But User subclasses are fixed.
-        // Ideally we should have a generic User class or setRole method if not
-        // polymorphic.
-        // But here we have polymorphism.
-        // Let's just update the DB directly or use a temporary User object to pass
-        // data.
-        // Actually, the DAO updateUser uses the runtime type of the User object to
-        // determine the role string.
-        // So we need to create a new instance of the correct class.
+        // Prepare updated values
+        String finalUsername = newUsername.isEmpty() ? user.getUsername() : newUsername;
+        String finalFirstName = newFirstName.isEmpty() ? user.getFirstName() : newFirstName;
+        String finalLastName = newLastName.isEmpty() ? user.getLastName() : newLastName;
+        String finalPasswordHash = newPassword.isEmpty() ? user.getPasswordHash()
+                : util.PasswordUtil.hashPassword(newPassword);
 
+        // Create new user object based on (potentially new) role
         User updatedUser = null;
         switch (newRole) {
             case TESTER:
-                updatedUser = new model.Tester(user.getId(), user.getUsername(), user.getFirstName(),
-                        user.getLastName(), user.getPasswordHash());
+                updatedUser = new model.Tester(user.getId(), finalUsername, finalFirstName, finalLastName,
+                        finalPasswordHash);
                 break;
             case JUNIOR_DEVELOPER:
-                updatedUser = new model.JuniorDeveloper(user.getId(), user.getUsername(), user.getFirstName(),
-                        user.getLastName(), user.getPasswordHash());
+                updatedUser = new model.JuniorDeveloper(user.getId(), finalUsername, finalFirstName, finalLastName,
+                        finalPasswordHash);
                 break;
             case SENIOR_DEVELOPER:
-                updatedUser = new model.SeniorDeveloper(user.getId(), user.getUsername(), user.getFirstName(),
-                        user.getLastName(), user.getPasswordHash());
+                updatedUser = new model.SeniorDeveloper(user.getId(), finalUsername, finalFirstName, finalLastName,
+                        finalPasswordHash);
                 break;
             case MANAGER:
-                updatedUser = new model.Manager(user.getId(), user.getUsername(), user.getFirstName(),
-                        user.getLastName(), user.getPasswordHash());
+                updatedUser = new model.Manager(user.getId(), finalUsername, finalFirstName, finalLastName,
+                        finalPasswordHash);
                 break;
         }
 
         if (authService.updateUser(currentUser, updatedUser)) {
-            helper.printSuccess("User role updated successfully.");
+            helper.printSuccess("User updated successfully.");
         } else {
             helper.printError("Failed to update user.");
         }

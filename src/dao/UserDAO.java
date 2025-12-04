@@ -133,7 +133,8 @@ public class UserDAO {
     }
 
     public boolean updateUser(User user) {
-        String query = "UPDATE users SET name = ?, surname = ?, role = ? WHERE user_id = ?";
+        // Update Name, Surname, Role, Username, and Password
+        String query = "UPDATE users SET name = ?, surname = ?, role = ?, username = ?, password_hash = ? WHERE user_id = ?";
         try (Connection conn = DatabaseConnection.getInstance().getConnection();
                 PreparedStatement stmt = conn.prepareStatement(query)) {
 
@@ -151,7 +152,9 @@ public class UserDAO {
                 roleStr = "MANAGER";
 
             stmt.setString(3, roleStr);
-            stmt.setInt(4, user.getId());
+            stmt.setString(4, user.getUsername());
+            stmt.setString(5, user.getPasswordHash());
+            stmt.setInt(6, user.getId());
 
             int rows = stmt.executeUpdate();
             return rows > 0;

@@ -212,8 +212,12 @@ public class ConsoleHelper {
                 printError("Email is required.");
                 continue;
             }
-            // Simple regex for email validation
-            if (input.matches("^[A-Za-z0-9+_.-]+@(.+)$")) {
+            // More realistic email regex:
+            // - Local part: allows alphanumeric, dots, underscores, plus, hyphens
+            // - @ symbol
+            // - Domain part: allows alphanumeric, dots, hyphens
+            // - TLD: at least 2 letters
+            if (input.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$")) {
                 return input;
             }
             printError("Invalid email format. Please try again.");
