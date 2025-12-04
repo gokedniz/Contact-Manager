@@ -82,7 +82,7 @@ public class ConsoleUI {
         int displayNum = 1;
 
         // --- 1. SEÇENEKLERİ BELİRLE VE YAZDIR ---
-        
+
         // Herkes için ortak
         helper.printMenuOption(displayNum++, "List Contacts");
         currentMenuActions.add(1); // Orijinal Action ID: 1
@@ -127,7 +127,7 @@ public class ConsoleUI {
 
         // --- 2. SEÇİMİ AL VE YÖNLENDİR ---
         int userChoice = helper.readInt("Select an option");
-        
+
         if (userChoice == 0) {
             handleMenuChoice(0); // Çıkış
         } else if (userChoice > 0 && userChoice <= currentMenuActions.size()) {
@@ -558,14 +558,13 @@ public class ConsoleUI {
     private void handleChangePassword() {
         helper.printTitle("CHANGE PASSWORD");
 
-        String oldPass = helper.readString("Enter Old Password (0 to Cancel)");
+        String oldPass = helper.readRequiredString("Enter Old Password (0 to Cancel)");
         if (oldPass.equals("0"))
             return;
 
         String newPass = helper.readRequiredString("Enter New Password");
-        // No need to check empty because readRequiredString handles it
-
         String confirmPass = helper.readRequiredString("Confirm New Password");
+
         if (!newPass.equals(confirmPass)) {
             helper.printError("Passwords do not match.");
             return;
