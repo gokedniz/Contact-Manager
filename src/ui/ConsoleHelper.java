@@ -198,4 +198,50 @@ public class ConsoleHelper {
             }
         }
     }
+    // --- GRAFİK ÇİZİCİ
+    public void printHorizontalBarChart(String title, java.util.Map<String, Integer> data) {
+        if (data.isEmpty()) {
+            printInfo("No data to visualize.");
+            return;
+        }
+
+        // 1. Toplam sayıyı bul (Yüzde hesabı için)
+        int total = data.values().stream().mapToInt(Integer::intValue).sum();
+        
+        // 2. En uzun domain ismini bul (Hizalama için)
+        int maxKeyLength = data.keySet().stream().mapToInt(String::length).max().orElse(10);
+        
+        printSectionHeader(title);
+
+        // 3. SIRALAMA İŞLEMİ (Sorting): Büyükten küçüğe
+        java.util.List<java.util.Map.Entry<String, Integer>> sortedList = new java.util.ArrayList<>(data.entrySet());
+        sortedList.sort((a, b) -> b.getValue().compareTo(a.getValue())); // Value'ya göre Descending sort
+
+        // Renk döngüsü
+        String[] colors = {CYAN, GREEN, YELLOW, PURPLE, BLUE};
+        int colorIdx = 0;
+
+        for (java.util.Map.Entry<String, Integer> entry : sortedList) {
+            String label = entry.getKey();
+            int value = entry.getValue();
+            
+            // Yüzde Hesabı
+            double percentage = (total > 0) ? ((double) value / total) * 100 : 0;
+            
+            // Çubuk Uzunluğu (Max 40 karakter)
+            int barLength = (int) ((percentage * 40) / 100);
+            if (barLength == 0 && value > 0) barLength = 1; 
+
+            String bar = "█".repeat(barLength);
+            String color = colors[colorIdx % colors.length];
+
+            // ÇIKTI FORMATI GÜNCELLENDİ:
+            // [Domain     ] │ [Çubuk          ]  7 (%15.2)
+            System.out.printf(WHITE + "%" + maxKeyLength + "s " + YELLOW + "│ " + color + "%-40s " + WHITE + "%d (%%%.1f)%n" + RESET, 
+                            label, bar, value, percentage);
+            
+            colorIdx++;
+        }
+        System.out.println(); 
+    }
 }
