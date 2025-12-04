@@ -17,6 +17,7 @@ public class ConsoleUI {
     private ContactService contactService;
     private service.ActivityLogService activityLogService;
     private User currentUser;
+    private List<Integer> currentMenuActions;
 
     public ConsoleUI() {
         this.helper = new ConsoleHelper();
@@ -76,41 +77,67 @@ public class ConsoleUI {
         helper.clearScreen();
         helper.printMenuHeader(currentUser.getRole() + " MENU");
 
-        // Common Options
-        helper.printMenuOption(1, "List Contacts");
-        helper.printMenuOption(2, "Search Contacts");
+        // Her seferinde listeyi sıfırla
+        currentMenuActions = new ArrayList<>();
+        int displayNum = 1;
 
-        // Role Specific Options
+        // --- 1. SEÇENEKLERİ BELİRLE VE YAZDIR ---
+        
+        // Herkes için ortak
+        helper.printMenuOption(displayNum++, "List Contacts");
+        currentMenuActions.add(1); // Orijinal Action ID: 1
+
+        helper.printMenuOption(displayNum++, "Search Contacts");
+        currentMenuActions.add(2); // Orijinal Action ID: 2
+
+        // Role Özel Seçenekler
         if (hasPermission(Role.SENIOR_DEVELOPER)) {
-            helper.printMenuOption(3, "Add Contact");
+            helper.printMenuOption(displayNum++, "Add Contact");
+            currentMenuActions.add(3);
         }
         if (hasPermission(Role.JUNIOR_DEVELOPER)) {
-            helper.printMenuOption(4, "Edit Contact (Direct ID)");
+            helper.printMenuOption(displayNum++, "Edit Contact (Direct ID)");
+            currentMenuActions.add(4);
         }
         if (hasPermission(Role.SENIOR_DEVELOPER)) {
-            helper.printMenuOption(5, "Delete Contact (Direct ID)");
+            helper.printMenuOption(displayNum++, "Delete Contact (Direct ID)");
+            currentMenuActions.add(5);
         }
         if (hasPermission(Role.MANAGER)) {
-            helper.printMenuOption(6, "View Statistics");
+            helper.printMenuOption(displayNum++, "View Statistics");
+            currentMenuActions.add(6);
         }
-
         if (hasPermission(Role.JUNIOR_DEVELOPER)) {
-            helper.printMenuOption(7, "Undo Last Operation");
+            helper.printMenuOption(displayNum++, "Undo Last Operation");
+            currentMenuActions.add(7);
         }
 
-        helper.printMenuOption(8, "Change Password");
+        // Şifre Değiştirme (Herkes için)
+        helper.printMenuOption(displayNum++, "Change Password");
+        currentMenuActions.add(8);
 
         if (hasPermission(Role.MANAGER)) {
-            helper.printMenuOption(9, "View Activity Logs");
-            helper.printMenuOption(10, "Add New User");
-            helper.printMenuOption(11, "Manage Users");
+            helper.printMenuOption(displayNum++, "View Activity Logs");
+            currentMenuActions.add(9);
         }
 
+        // Logout her zaman en sonda ve 0 numara olsun
         helper.printMenuOption(0, "Logout");
         helper.printMenuFooter();
 
-        int choice = helper.readInt("Select an option");
-        handleMenuChoice(choice);
+        // --- 2. SEÇİMİ AL VE YÖNLENDİR ---
+        int userChoice = helper.readInt("Select an option");
+        
+        if (userChoice == 0) {
+            handleMenuChoice(0); // Çıkış
+        } else if (userChoice > 0 && userChoice <= currentMenuActions.size()) {
+            // Kullanıcının girdiği "Sıra Numarası"nı, gerçek "Action ID"ye çeviriyoruz
+            int realActionId = currentMenuActions.get(userChoice - 1);
+            handleMenuChoice(realActionId);
+        } else {
+            helper.printError("Invalid option.");
+            helper.pressEnterToContinue();
+        }
     }
 
     private boolean hasPermission(Role minRole) {
