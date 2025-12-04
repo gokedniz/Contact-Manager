@@ -58,8 +58,9 @@ public class ConsoleUI {
     private void showLogin() {
         helper.clearScreen(); // Login ekranına girince temizle
         helper.printTitle("SYSTEM LOGIN");
-        String username = helper.readString("Username");
-        String password = helper.readString("Password");
+        helper.printTitle("SYSTEM LOGIN");
+        String username = helper.readRequiredString("Username");
+        String password = helper.readRequiredString("Password");
 
         User user = authService.login(username, password);
         if (user != null) {
@@ -215,7 +216,7 @@ public class ConsoleUI {
         helper.printTable(new String[] { "Metric", "Value" }, statData);
 
         System.out.println();
-        
+
         // Alt Kısım: Domain Dağılımı (ARTIK GRAFİK OLACAK)
         @SuppressWarnings("unchecked")
         Map<String, Integer> domains = (Map<String, Integer>) stats.get("Email Domains");
@@ -223,7 +224,7 @@ public class ConsoleUI {
         // Helper'daki yeni grafik çiziciyi çağırıyoruz
         helper.printHorizontalBarChart("EMAIL DOMAIN DISTRIBUTION", domains);
 
-        helper.pressEnterToContinue(); 
+        helper.pressEnterToContinue();
     }
 
     private void listContacts() {
@@ -433,17 +434,23 @@ public class ConsoleUI {
         if (!nick.isEmpty())
             c.setNickname(nick);
 
-        String phone1 = helper.readString("Primary Phone [" + c.getPhonePrimary() + "]");
-        if (!phone1.isEmpty())
+        // For Edit, we can't easily use readPhone(required=true) because we want to
+        // allow empty to skip.
+        // But if they DO enter something, it must be valid.
+        // Let's use readPhone(required=false) which allows empty, but validates if not
+        // empty.
+
+        String phone1 = helper.readPhone("Primary Phone [" + c.getPhonePrimary() + "]", false);
+        if (phone1 != null)
             c.setPhonePrimary(phone1);
 
-        String phone2 = helper
-                .readString("Secondary Phone [" + (c.getPhoneSecondary() != null ? c.getPhoneSecondary() : "") + "]");
-        if (!phone2.isEmpty())
+        String phone2 = helper.readPhone(
+                "Secondary Phone [" + (c.getPhoneSecondary() != null ? c.getPhoneSecondary() : "") + "]", false);
+        if (phone2 != null)
             c.setPhoneSecondary(phone2);
 
-        String email = helper.readString("Email [" + (c.getEmail() != null ? c.getEmail() : "") + "]");
-        if (!email.isEmpty())
+        String email = helper.readEmail("Email [" + (c.getEmail() != null ? c.getEmail() : "") + "]", false);
+        if (email != null)
             c.setEmail(email);
 
         String linkedin = helper
@@ -477,13 +484,14 @@ public class ConsoleUI {
         helper.printTitle("ADD NEW CONTACT");
 
         // Verileri kullanıcıdan alıyoruz
-        String first = helper.readString("First Name");
+        // Verileri kullanıcıdan alıyoruz
+        String first = helper.readRequiredString("First Name");
         String middle = helper.readString("Middle Name (Optional)");
-        String last = helper.readString("Last Name");
+        String last = helper.readRequiredString("Last Name");
         String nick = helper.readString("Nickname (Optional)");
-        String phone1 = helper.readString("Primary Phone");
-        String phone2 = helper.readString("Secondary Phone (Optional)");
-        String email = helper.readString("Email (Optional)");
+        String phone1 = helper.readPhone("Primary Phone", true);
+        String phone2 = helper.readPhone("Secondary Phone (Optional)", false);
+        String email = helper.readEmail("Email (Optional)", false);
         String linkedin = helper.readString("LinkedIn (Optional)");
         Date birth = helper.readDate("Birth Date (Optional)");
 
@@ -529,13 +537,10 @@ public class ConsoleUI {
         if (oldPass.equals("0"))
             return;
 
-        String newPass = helper.readString("Enter New Password");
-        if (newPass.isEmpty()) {
-            helper.printError("Password cannot be empty.");
-            return;
-        }
+        String newPass = helper.readRequiredString("Enter New Password");
+        // No need to check empty because readRequiredString handles it
 
-        String confirmPass = helper.readString("Confirm New Password");
+        String confirmPass = helper.readRequiredString("Confirm New Password");
         if (!newPass.equals(confirmPass)) {
             helper.printError("Passwords do not match.");
             return;
@@ -633,15 +638,15 @@ public class ConsoleUI {
 
         helper.printTitle("ADD NEW USER");
 
-        String username = helper.readString("Username");
+        String username = helper.readRequiredString("Username");
         if (authService.isUserExists(username)) {
             helper.printError("Username already exists.");
             return;
         }
 
-        String password = helper.readString("Password");
-        String firstName = helper.readString("First Name");
-        String lastName = helper.readString("Last Name");
+        String password = helper.readRequiredString("Password");
+        String firstName = helper.readRequiredString("First Name");
+        String lastName = helper.readRequiredString("Last Name");
 
         System.out.println("Select Role:");
         System.out.println("1. Tester");

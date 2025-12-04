@@ -39,11 +39,12 @@ public class ConsoleHelper {
         System.out.println("  / ____/___  ____  / /_____ ______/ /_   /  |/  /___ _____  ____ _____ ____  _____");
         System.out.println(" / /   / __ \\/ __ \\/ __/ __ `/ ___/ __/  / /|_/ / __ `/ __ \\/ __ `/ __ `/ _ \\/ ___/");
         System.out.println("/ /___/ /_/ / / / / /_/ /_/ / /__/ /_   / /  / / /_/ / / / / /_/ / /_/ /  __/ /    ");
-        System.out.println("\\____/\\____/_/ /_/\\__/\\__,_/\\___/\\__/  /_/  /_/\\__,_/_/ /_/\\__,_/\\__, /\\___/_/     ");
+        System.out.println(
+                "\\____/\\____/_/ /_/\\__/\\__,_/\\___/\\__/  /_/  /_/\\__,_/_/ /_/\\__,_/\\__, /\\___/_/     ");
         System.out.println("                                                                /____/                 ");
         System.out.println(RESET);
     }
-    
+
     // --- KUTULU BAŞLIKLAR VE MESAJLAR ---
     public void printTitle(String title) {
         String border = "═".repeat(title.length() + 6);
@@ -53,7 +54,8 @@ public class ConsoleHelper {
     }
 
     public void printSectionHeader(String title) {
-        System.out.println("\n" + PURPLE + "── " + BOLD + title.toUpperCase() + RESET + PURPLE + " " + "─".repeat(40) + RESET);
+        System.out.println(
+                "\n" + PURPLE + "── " + BOLD + title.toUpperCase() + RESET + PURPLE + " " + "─".repeat(40) + RESET);
     }
 
     public void printError(String message) {
@@ -73,42 +75,21 @@ public class ConsoleHelper {
     }
 
     // --- MENÜ SİSTEMİ ---
-    // 1. BAŞLIK METODU
     public void printMenuHeader(String title) {
-        // Çizdirmenin Temel Mantığı(hayır rastgele sayılar yazmadım):
-        // Sabitler: ┌── (3) + Boşluk (1) + Başlık (N) + Boşluk (1) + Çizgi (X) + ┐ (1)
-        // Toplam Genişlik = 52 olmalı.
-        // 3 + 1 + N + 1 + X + 1 = 52
-        // 6 + N + X = 52  =>  X = 46 - N
-        
         int dashCount = 46 - title.length();
-        // Eksiye düşmemesi için güvenlik önlemi
-        if (dashCount < 0) dashCount = 0; 
-        
-        System.out.println(PURPLE + "\n┌── " + BOLD + title + RESET + PURPLE + " " + "─".repeat(dashCount) + "┐" + RESET);
+        if (dashCount < 0)
+            dashCount = 0;
+        System.out
+                .println(PURPLE + "\n┌── " + BOLD + title + RESET + PURPLE + " " + "─".repeat(dashCount) + "┐" + RESET);
     }
 
-    // 2. SEÇENEK METODU
     public void printMenuOption(int number, String description) {
-        // Temel Mantık:
-        // Sol Sabitler: │ (1) + Boşluk (1) = 2 Karakter
-        // Sağ Sabit: │ (1) Karakter
-        // Köşeli Parantez Grubu:
-        //   - Tek haneli ise [1] -> 3 Karakter
-        //   - Çift haneli ise [10] -> 4 Karakter
-        
-        // Toplam Genişlik (52) hedefine ulaşmak için metin alanı (pading yani) dinamik olmalı:
-        // Tek hane: 52 - (2 sol + 3 sayı + 1 boşluk + 1 sağ) = 45 birim boşluk
-        // Çift hane: 52 - (2 sol + 4 sayı + 1 boşluk + 1 sağ) = 44 birim boşluk
-        
         int padding = (number < 10) ? 45 : 44;
-        
-        System.out.printf(PURPLE + "│ " + CYAN + "[%d]" + RESET + " %-" + padding + "s" + PURPLE + "│%n" + RESET, number, description);
+        System.out.printf(PURPLE + "│ " + CYAN + "[%d]" + RESET + " %-" + padding + "s" + PURPLE + "│%n" + RESET,
+                number, description);
     }
-    // 3. ALT ÇİZGİ METODU
+
     public void printMenuFooter() {
-        // Temel Mantık:
-        // └ (1) + Çizgi (50) + ┘ (1) = 52 Karakter
         System.out.println(PURPLE + "└" + "─".repeat(50) + "┘" + RESET);
     }
 
@@ -126,7 +107,8 @@ public class ConsoleHelper {
 
         for (String[] row : data) {
             for (int i = 0; i < row.length; i++) {
-                if (row[i] == null) row[i] = "-";
+                if (row[i] == null)
+                    row[i] = "-";
                 if (row[i].length() > colWidths[i]) {
                     colWidths[i] = row[i].length();
                 }
@@ -134,15 +116,16 @@ public class ConsoleHelper {
         }
 
         StringBuilder separator = new StringBuilder("┼");
-        for (int w : colWidths) separator.append("─".repeat(w + 2)).append("┼");
-        
+        for (int w : colWidths)
+            separator.append("─".repeat(w + 2)).append("┼");
+
         String topBorder = separator.toString().replace("┼", "┬");
         String midBorder = separator.toString();
         String botBorder = separator.toString().replace("┼", "┴");
 
-        System.out.println(YELLOW + topBorder.substring(0, 1).replace("┬", "┌") + 
-                           topBorder.substring(1, topBorder.length()-1) + 
-                           topBorder.substring(topBorder.length()-1).replace("┬", "┐") + RESET);
+        System.out.println(YELLOW + topBorder.substring(0, 1).replace("┬", "┌") +
+                topBorder.substring(1, topBorder.length() - 1) +
+                topBorder.substring(topBorder.length() - 1).replace("┬", "┐") + RESET);
 
         System.out.print(YELLOW + "│");
         for (int i = 0; i < headers.length; i++) {
@@ -150,9 +133,9 @@ public class ConsoleHelper {
         }
         System.out.println(RESET);
 
-        System.out.println(YELLOW + midBorder.substring(0, 1).replace("┼", "├") + 
-                           midBorder.substring(1, midBorder.length()-1) + 
-                           midBorder.substring(midBorder.length()-1).replace("┼", "┤") + RESET);
+        System.out.println(YELLOW + midBorder.substring(0, 1).replace("┼", "├") +
+                midBorder.substring(1, midBorder.length() - 1) +
+                midBorder.substring(midBorder.length() - 1).replace("┼", "┤") + RESET);
 
         for (String[] row : data) {
             System.out.print(YELLOW + "│" + RESET);
@@ -162,9 +145,9 @@ public class ConsoleHelper {
             System.out.println();
         }
 
-        System.out.println(YELLOW + botBorder.substring(0, 1).replace("┴", "└") + 
-                           botBorder.substring(1, botBorder.length()-1) + 
-                           botBorder.substring(botBorder.length()-1).replace("┴", "┘") + RESET);
+        System.out.println(YELLOW + botBorder.substring(0, 1).replace("┴", "└") +
+                botBorder.substring(1, botBorder.length() - 1) +
+                botBorder.substring(botBorder.length() - 1).replace("┴", "┘") + RESET);
     }
 
     // --- INPUT METOTLARI ---
@@ -198,6 +181,51 @@ public class ConsoleHelper {
             }
         }
     }
+
+    public String readRequiredString(String prompt) {
+        while (true) {
+            String input = readString(prompt);
+            if (!input.isEmpty()) {
+                return input;
+            }
+            printError("This field cannot be empty.");
+        }
+    }
+
+    public String readEmail(String prompt, boolean required) {
+        while (true) {
+            String input = readString(prompt);
+            if (input.isEmpty()) {
+                if (!required)
+                    return null;
+                printError("Email is required.");
+                continue;
+            }
+            // Simple regex for email validation
+            if (input.matches("^[A-Za-z0-9+_.-]+@(.+)$")) {
+                return input;
+            }
+            printError("Invalid email format. Please try again.");
+        }
+    }
+
+    public String readPhone(String prompt, boolean required) {
+        while (true) {
+            String input = readString(prompt);
+            if (input.isEmpty()) {
+                if (!required)
+                    return null;
+                printError("Phone number is required.");
+                continue;
+            }
+            // Regex: Optional +, digits, spaces, dashes. Min 7 chars.
+            if (input.matches("^[+]?[0-9\\s\\-]{7,20}$")) {
+                return input;
+            }
+            printError("Invalid phone number format. Use digits, spaces, or dashes.");
+        }
+    }
+
     // --- GRAFİK ÇİZİCİ
     public void printHorizontalBarChart(String title, java.util.Map<String, Integer> data) {
         if (data.isEmpty()) {
@@ -205,43 +233,37 @@ public class ConsoleHelper {
             return;
         }
 
-        // 1. Toplam sayıyı bul (Yüzde hesabı için)
         int total = data.values().stream().mapToInt(Integer::intValue).sum();
-        
-        // 2. En uzun domain ismini bul (Hizalama için)
         int maxKeyLength = data.keySet().stream().mapToInt(String::length).max().orElse(10);
-        
+
         printSectionHeader(title);
 
-        // 3. SIRALAMA İŞLEMİ (Sorting): Büyükten küçüğe
         java.util.List<java.util.Map.Entry<String, Integer>> sortedList = new java.util.ArrayList<>(data.entrySet());
-        sortedList.sort((a, b) -> b.getValue().compareTo(a.getValue())); // Value'ya göre Descending sort
+        sortedList.sort((a, b) -> b.getValue().compareTo(a.getValue()));
 
-        // Renk döngüsü
-        String[] colors = {CYAN, GREEN, YELLOW, PURPLE, BLUE};
+        String[] colors = { CYAN, GREEN, YELLOW, PURPLE, BLUE };
         int colorIdx = 0;
 
         for (java.util.Map.Entry<String, Integer> entry : sortedList) {
             String label = entry.getKey();
             int value = entry.getValue();
-            
-            // Yüzde Hesabı
+
             double percentage = (total > 0) ? ((double) value / total) * 100 : 0;
-            
-            // Çubuk Uzunluğu (Max 40 karakter)
+
             int barLength = (int) ((percentage * 40) / 100);
-            if (barLength == 0 && value > 0) barLength = 1; 
+            if (barLength == 0 && value > 0)
+                barLength = 1;
 
             String bar = "█".repeat(barLength);
             String color = colors[colorIdx % colors.length];
 
-            // ÇIKTI FORMATI GÜNCELLENDİ:
-            // [Domain     ] │ [Çubuk          ]  7 (%15.2)
-            System.out.printf(WHITE + "%" + maxKeyLength + "s " + YELLOW + "│ " + color + "%-40s " + WHITE + "%d (%%%.1f)%n" + RESET, 
-                            label, bar, value, percentage);
-            
+            System.out.printf(
+                    WHITE + "%" + maxKeyLength + "s " + YELLOW + "│ " + color + "%-40s " + WHITE + "%d (%%%.1f)%n"
+                            + RESET,
+                    label, bar, value, percentage);
+
             colorIdx++;
         }
-        System.out.println(); 
+        System.out.println();
     }
 }
