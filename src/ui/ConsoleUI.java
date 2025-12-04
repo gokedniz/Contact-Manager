@@ -81,8 +81,10 @@ public class ConsoleUI {
         helper.printMenuOption(2, "Search Contacts");
 
         // Role Specific Options
-        if (hasPermission(Role.JUNIOR_DEVELOPER)) {
+        if (hasPermission(Role.SENIOR_DEVELOPER)) {
             helper.printMenuOption(3, "Add Contact");
+        }
+        if (hasPermission(Role.JUNIOR_DEVELOPER)) {
             helper.printMenuOption(4, "Edit Contact (Direct ID)");
         }
         if (hasPermission(Role.SENIOR_DEVELOPER)) {
@@ -461,7 +463,7 @@ public class ConsoleUI {
     }
 
     private void addContact() {
-        if (!hasPermission(Role.JUNIOR_DEVELOPER)) {
+        if (!hasPermission(Role.SENIOR_DEVELOPER)) {
             helper.printError("Access Denied.");
             return;
         }
