@@ -102,6 +102,8 @@ public class ConsoleUI {
 
         if (hasPermission(Role.MANAGER)) {
             helper.printMenuOption(9, "View Activity Logs");
+            helper.printMenuOption(10, "Add New User");
+            helper.printMenuOption(11, "Manage Users");
         }
 
         helper.printMenuOption(0, "Logout");
@@ -165,6 +167,14 @@ public class ConsoleUI {
                 break;
             case 9:
                 showActivityLogs();
+                helper.pressEnterToContinue();
+                break;
+            case 10:
+                handleAddNewUser();
+                helper.pressEnterToContinue();
+                break;
+            case 11:
+                handleManageUsers();
                 helper.pressEnterToContinue();
                 break;
             default:
@@ -616,6 +626,192 @@ public class ConsoleUI {
             }
             String[] headers = { "ID", "Timestamp", "Username", "User ID", "Action", "Details" };
             helper.printTable(headers, tableData);
+        }
+    }
+
+    private void handleAddNewUser() {
+        if (!hasPermission(Role.MANAGER)) {
+            helper.printError("Access Denied.");
+            return;
+        }
+
+        helper.printTitle("ADD NEW USER");
+
+        String username = helper.readString("Username");
+        if (authService.isUserExists(username)) {
+            helper.printError("Username already exists.");
+            return;
+        }
+
+        String password = helper.readString("Password");
+        String firstName = helper.readString("First Name");
+        String lastName = helper.readString("Last Name");
+
+        System.out.println("Select Role:");
+        System.out.println("1. Tester");
+        System.out.println("2. Junior Developer");
+        System.out.println("3. Senior Developer");
+
+        int roleChoice = helper.readInt("Role Choice");
+        Role role = null;
+        switch (roleChoice) {
+            case 1:
+                role = Role.TESTER;
+                break;
+            case 2:
+                role = Role.JUNIOR_DEVELOPER;
+                break;
+            case 3:
+                role = Role.SENIOR_DEVELOPER;
+                break;
+            default:
+                helper.printError("Invalid role selection.");
+                return;
+        }
+
+        if (authService.registerUser(currentUser, username, password, firstName, lastName, role)) {
+            helper.printSuccess("User added successfully.");
+        } else {
+            helper.printError("Failed to add user.");
+        }
+    }
+
+    private void handleManageUsers() {
+        if (!hasPermission(Role.MANAGER)) {
+            helper.printError("Access Denied.");
+            return;
+        }
+
+        helper.printTitle("MANAGE USERS");
+        List<User> users = authService.getAllUsers();
+
+        if (users.isEmpty()) {
+            helper.printInfo("No users found.");
+            return;
+        }
+
+        List<String[]> tableData = new ArrayList<>();
+        for (User u : users) {
+            tableData.add(new String[] {
+                    String.valueOf(u.getId()),
+                    u.getUsername(),
+                    u.getFirstName() + " " + u.getLastName(),
+                    u.getRole().toString()
+            });
+        }
+        helper.printTable(new String[] { "ID", "Username", "Name", "Role" }, tableData);
+
+        int userId = helper.readInt("Enter User ID to Edit/Delete (0 to Cancel)");
+        if (userId == 0)
+            return;
+
+        User selectedUser = users.stream().filter(u -> u.getId() == userId).findFirst().orElse(null);
+        if (selectedUser == null) {
+            helper.printError("User not found.");
+            return;
+        }
+
+        helper.printSectionHeader("SELECTED: " + selectedUser.getUsername());
+        helper.printMenuOption(1, "Edit Role");
+        helper.printMenuOption(2, "Delete User");
+        helper.printMenuOption(0, "Cancel");
+
+        int action = helper.readInt("Action");
+        switch (action) {
+            case 1:
+                editUserRole(selectedUser);
+                break;
+            case 2:
+                deleteUser(selectedUser);
+                break;
+            case 0:
+                break;
+            default:
+                helper.printError("Invalid option.");
+        }
+    }
+
+    private void editUserRole(User user) {
+        System.out.println("Current Role: " + user.getRole());
+        System.out.println("Select New Role:");
+        System.out.println("1. Tester");
+        System.out.println("2. Junior Developer");
+        System.out.println("3. Senior Developer");
+        System.out.println("4. Manager");
+
+        int roleChoice = helper.readInt("Role Choice");
+        Role newRole = null;
+        switch (roleChoice) {
+            case 1:
+                newRole = Role.TESTER;
+                break;
+            case 2:
+                newRole = Role.JUNIOR_DEVELOPER;
+                break;
+            case 3:
+                newRole = Role.SENIOR_DEVELOPER;
+                break;
+            case 4:
+                newRole = Role.MANAGER;
+                break;
+            default:
+                helper.printError("Invalid role selection.");
+                return;
+        }
+
+        // Create a new user object with updated role (simulating update)
+        // Since User classes are specific, we might need to recreate the object or just
+        // update DB based on ID.
+        // Our DAO updateUser takes a User object. But User subclasses are fixed.
+        // Ideally we should have a generic User class or setRole method if not
+        // polymorphic.
+        // But here we have polymorphism.
+        // Let's just update the DB directly or use a temporary User object to pass
+        // data.
+        // Actually, the DAO updateUser uses the runtime type of the User object to
+        // determine the role string.
+        // So we need to create a new instance of the correct class.
+
+        User updatedUser = null;
+        switch (newRole) {
+            case TESTER:
+                updatedUser = new model.Tester(user.getId(), user.getUsername(), user.getFirstName(),
+                        user.getLastName(), user.getPasswordHash());
+                break;
+            case JUNIOR_DEVELOPER:
+                updatedUser = new model.JuniorDeveloper(user.getId(), user.getUsername(), user.getFirstName(),
+                        user.getLastName(), user.getPasswordHash());
+                break;
+            case SENIOR_DEVELOPER:
+                updatedUser = new model.SeniorDeveloper(user.getId(), user.getUsername(), user.getFirstName(),
+                        user.getLastName(), user.getPasswordHash());
+                break;
+            case MANAGER:
+                updatedUser = new model.Manager(user.getId(), user.getUsername(), user.getFirstName(),
+                        user.getLastName(), user.getPasswordHash());
+                break;
+        }
+
+        if (authService.updateUser(currentUser, updatedUser)) {
+            helper.printSuccess("User role updated successfully.");
+        } else {
+            helper.printError("Failed to update user.");
+        }
+    }
+
+    private void deleteUser(User user) {
+        if (user.getId() == currentUser.getId()) {
+            helper.printError("You cannot delete yourself.");
+            return;
+        }
+
+        String confirm = helper.readString("Are you sure you want to delete user " + user.getUsername() + "? (y/n)");
+        if (confirm.equalsIgnoreCase("y")) {
+            if (authService.deleteUser(currentUser, user.getId())) {
+                helper.printSuccess("User deleted successfully.");
+            } else {
+                helper.printError("Failed to delete user.");
+            }
         }
     }
 }
