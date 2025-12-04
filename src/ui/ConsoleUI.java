@@ -196,6 +196,7 @@ public class ConsoleUI {
         helper.printTitle("SYSTEM STATISTICS");
         Map<String, Object> stats = contactService.getStatistics();
 
+        // Üst Kısım: Genel Sayısal Veriler (Tablo Olarak Kalsın)
         List<String[]> statData = new ArrayList<>();
         statData.add(new String[] { "Total Contacts", String.valueOf(stats.get("Total Contacts")) });
         statData.add(new String[] { "Contacts with Email", String.valueOf(stats.get("Contacts with Email")) });
@@ -204,20 +205,15 @@ public class ConsoleUI {
         helper.printTable(new String[] { "Metric", "Value" }, statData);
 
         System.out.println();
-        helper.printSectionHeader("Email Domain Distribution");
-
+        
+        // Alt Kısım: Domain Dağılımı (ARTIK GRAFİK OLACAK)
         @SuppressWarnings("unchecked")
         Map<String, Integer> domains = (Map<String, Integer>) stats.get("Email Domains");
 
-        List<String[]> domainData = new ArrayList<>();
-        if (domains.isEmpty()) {
-            domainData.add(new String[] { "No Data", "0" });
-        } else {
-            domains.forEach((domain, count) -> domainData.add(new String[] { domain, String.valueOf(count) }));
-        }
-        helper.printTable(new String[] { "Domain", "Count" }, domainData);
+        // Helper'daki yeni grafik çiziciyi çağırıyoruz
+        helper.printHorizontalBarChart("EMAIL DOMAIN DISTRIBUTION", domains);
 
-        helper.pressEnterToContinue(); // İstatistikler okunsun diye beklettim
+        helper.pressEnterToContinue(); 
     }
 
     private void listContacts() {
