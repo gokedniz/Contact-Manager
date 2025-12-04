@@ -170,14 +170,25 @@ public class ConsoleHelper {
 
     public Date readDate(String prompt) {
         while (true) {
-            System.out.print(YELLOW + "➜ " + prompt + " (YYYY-MM-DD): " + RESET);
+            System.out.print(YELLOW + "➜ " + prompt + " (DD-MM-YYYY): " + RESET);
             String input = scanner.nextLine().trim();
             if (input.isEmpty())
                 return null;
             try {
-                return Date.valueOf(input);
+                // Parse using d-M-yyyy pattern which handles both 05-12-2025 and 5-12-2025
+                java.time.format.DateTimeFormatter formatter = java.time.format.DateTimeFormatter.ofPattern("d-M-yyyy");
+                java.time.LocalDate localDate = java.time.LocalDate.parse(input, formatter);
+
+                if (localDate.isAfter(java.time.LocalDate.now())) {
+                    printError("Date cannot be in the future.");
+                    continue;
+                }
+
+                return Date.valueOf(localDate);
+            } catch (java.time.format.DateTimeParseException e) {
+                printError("Invalid date. Use DD-MM-YYYY (e.g., 05-12-2025 or 5-12-2025).");
             } catch (IllegalArgumentException e) {
-                printError("Invalid date format. Use YYYY-MM-DD.");
+                printError("Invalid date format.");
             }
         }
     }

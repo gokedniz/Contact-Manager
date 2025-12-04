@@ -457,14 +457,15 @@ public class ConsoleUI {
         if (!linkedin.isEmpty())
             c.setLinkedinUrl(linkedin);
 
-        String birthStr = helper
-                .readString("Birth Date [" + (c.getBirthDate() != null ? c.getBirthDate() : "") + "] (YYYY-MM-DD)");
-        if (!birthStr.isEmpty()) {
-            try {
-                c.setBirthDate(Date.valueOf(birthStr));
-            } catch (IllegalArgumentException e) {
-                helper.printError("Invalid date format. Date not updated.");
-            }
+        String formattedDate = "";
+        if (c.getBirthDate() != null) {
+            java.time.format.DateTimeFormatter dtf = java.time.format.DateTimeFormatter.ofPattern("dd-MM-yyyy");
+            formattedDate = c.getBirthDate().toLocalDate().format(dtf);
+        }
+
+        Date newDate = helper.readDate("Birth Date [" + formattedDate + "]");
+        if (newDate != null) {
+            c.setBirthDate(newDate);
         }
 
         if (contactService.updateContact(currentUser, c)) {
