@@ -4,7 +4,33 @@ import dao.ContactDAO;
 import model.Contact;
 import java.util.List;
 
+/**
+ * Utility class for migrating and standardizing contact email addresses.
+ * 
+ * <p>
+ * Performs a batch update on existing contacts to ensure email domain
+ * diversity.
+ * Distributes email domains among Gmail, Outlook, Yandex, and Hotmail according
+ * to predefined quotas (15, 10, 5, remainder).
+ * </p>
+ * 
+ * @author Group 10
+ * @version 1.0
+ */
 public class EmailMigration {
+
+    /**
+     * Main method to execute the email migration.
+     * 
+     * <p>
+     * Iterates through all existing contacts and updates their email addresses
+     * to match the new domain distribution rules. Updates are committed to the
+     * database
+     * only if changes are required.
+     * </p>
+     * 
+     * @param args Command-line arguments (not used).
+     */
     public static void main(String[] args) {
         System.out.println("Starting Email Migration...");
         ContactDAO dao = new ContactDAO();

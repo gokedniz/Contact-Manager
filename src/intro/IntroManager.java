@@ -1,7 +1,31 @@
 package intro;
 
+/**
+ * Manages the application's introductory sequence.
+ * 
+ * <p>
+ * Handles the playback of the intro music and triggers the visual animation
+ * implemented in {@link YeniYilAnimasyon}. Dynamically selects logic based on
+ * the operating system (Windows vs MacOS).
+ * </p>
+ * 
+ * @author Group 10
+ * @version 1.0
+ */
 public class IntroManager {
 
+    /**
+     * Plays the introductory music and animation.
+     * 
+     * <p>
+     * Detects the operating system to choose the appropriate media player
+     * (cmd.exe/wmplayer for Windows, afplay for MacOS). Starts the background
+     * (cmd.exe/wmplayer for Windows, afplay for MacOS). Starts the background
+     * music process and launches the console animation. The music process is left
+     * running in the background to ensure playback continues during the application
+     * usage.
+     * </p>
+     */
     public static void playIntro() {
         // --- Music Configuration ---
         String MP3_PATH;
@@ -17,8 +41,6 @@ public class IntroManager {
             MUSIC_PLAYER = "afplay";
         }
 
-        Process musicProcess = null;
-
         try {
             // Start Music
             String[] musicCommand;
@@ -30,7 +52,7 @@ public class IntroManager {
                 musicCommand = new String[] { MUSIC_PLAYER, MP3_PATH };
             }
 
-            musicProcess = new ProcessBuilder(musicCommand).inheritIO().start();
+            new ProcessBuilder(musicCommand).inheritIO().start();
 
             // Run Animation
             YeniYilAnimasyon.animate();
@@ -43,11 +65,8 @@ public class IntroManager {
 
         } catch (Exception e) {
             e.printStackTrace();
-        } finally {
-            // Stop Music
-            if (musicProcess != null && musicProcess.isAlive()) {
-                musicProcess.destroyForcibly();
-            }
         }
+        // Music continues playing in the background as per user request (especially for
+        // Mac)
     }
 }

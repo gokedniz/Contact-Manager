@@ -4,52 +4,78 @@ import dao.ContactDAO;
 import model.Contact;
 import java.util.Random;
 
+/**
+ * Utility class for seeding the database with initial sample data.
+ * 
+ * <p>
+ * Generates and inserts fake contact data into the database for testing and
+ * demonstration purposes.
+ * Creates contacts with random names, phone numbers, and email addresses
+ * distributed across varying domains.
+ * </p>
+ * 
+ * @author Group 10
+ * @version 1.0
+ */
 public class DataSeeder {
-    public static void main(String[] args) {
-        System.out.println("Starting Data Seeding...");
-        ContactDAO dao = new ContactDAO();
-        Random random = new Random();
 
-        String[] firstNames = { "Ahmet", "Mehmet", "Ayse", "Fatma", "Ali", "Veli", "Zeynep", "Mustafa", "Can", "Elif",
-                "Burak", "Cem", "Deniz", "Ege", "Selin" };
-        String[] lastNames = { "Yilmaz", "Kaya", "Demir", "Celik", "Sahin", "Yildiz", "Ozturk", "Aydin", "Ozdemir",
-                "Arslan", "Dogan", "Kilic", "Aslan", "Kara", "Cetin" };
+        /**
+         * Main method to execute the data seeding process.
+         * 
+         * <p>
+         * Generates 50 random contacts and adds them to the database via ContactDAO.
+         * Uses predefined lists of names and domains to ensure realistic data.
+         * </p>
+         * 
+         * @param args Command-line arguments (not used).
+         */
+        public static void main(String[] args) {
+                System.out.println("Starting Data Seeding...");
+                ContactDAO dao = new ContactDAO();
+                Random random = new Random();
 
-        String[] domains = {
-                "gmail.com", "outlook.com", "yandex.com", "hotmail.com", "yahoo.com",
-                "protonmail.com", "icloud.com", "zoho.com", "aol.com", "gmx.com"
-        };
+                String[] firstNames = { "Ahmet", "Mehmet", "Ayse", "Fatma", "Ali", "Veli", "Zeynep", "Mustafa", "Can",
+                                "Elif",
+                                "Burak", "Cem", "Deniz", "Ege", "Selin" };
+                String[] lastNames = { "Yilmaz", "Kaya", "Demir", "Celik", "Sahin", "Yildiz", "Ozturk", "Aydin",
+                                "Ozdemir",
+                                "Arslan", "Dogan", "Kilic", "Aslan", "Kara", "Cetin" };
 
-        // Specific distribution requested: "total 10 types of domains"
-        // We will cycle through them to ensure variety.
+                String[] domains = {
+                                "gmail.com", "outlook.com", "yandex.com", "hotmail.com", "yahoo.com",
+                                "protonmail.com", "icloud.com", "zoho.com", "aol.com", "gmx.com"
+                };
 
-        for (int i = 0; i < 50; i++) {
-            String firstName = firstNames[random.nextInt(firstNames.length)];
-            String lastName = lastNames[random.nextInt(lastNames.length)];
+                // Specific distribution requested: "total 10 types of domains"
+                // We will cycle through them to ensure variety.
 
-            // simple randomization for variety
-            String phone = "5" + (10 + random.nextInt(90)) + " " + (100 + random.nextInt(900)) + " "
-                    + (10 + random.nextInt(90)) + " " + (10 + random.nextInt(90));
+                for (int i = 0; i < 50; i++) {
+                        String firstName = firstNames[random.nextInt(firstNames.length)];
+                        String lastName = lastNames[random.nextInt(lastNames.length)];
 
-            String domain = domains[i % domains.length];
-            String email = firstName.toLowerCase() + "." + lastName.toLowerCase() + (i + 1) + "@" + domain;
+                        // simple randomization for variety
+                        String phone = "5" + (10 + random.nextInt(90)) + " " + (100 + random.nextInt(900)) + " "
+                                        + (10 + random.nextInt(90)) + " " + (10 + random.nextInt(90));
 
-            Contact c = new Contact(
-                    firstName,
-                    null, // middle name
-                    lastName,
-                    null, // nickname
-                    phone,
-                    null, // sec phone
-                    email,
-                    "linkedin.com/in/" + firstName.toLowerCase() + lastName.toLowerCase(),
-                    null, // birth date
-                    random.nextBoolean() ? "E" : "K" // gender
-            );
+                        String domain = domains[i % domains.length];
+                        String email = firstName.toLowerCase() + "." + lastName.toLowerCase() + (i + 1) + "@" + domain;
 
-            dao.addContact(c);
+                        Contact c = new Contact(
+                                        firstName,
+                                        null, // middle name
+                                        lastName,
+                                        null, // nickname
+                                        phone,
+                                        null, // sec phone
+                                        email,
+                                        "linkedin.com/in/" + firstName.toLowerCase() + lastName.toLowerCase(),
+                                        null, // birth date
+                                        random.nextBoolean() ? "E" : "K" // gender
+                        );
+
+                        dao.addContact(c);
+                }
+
+                System.out.println("Seeding Completed. Added 50 contacts.");
         }
-
-        System.out.println("Seeding Completed. Added 50 contacts.");
-    }
 }
