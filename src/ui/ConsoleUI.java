@@ -28,6 +28,8 @@ public class ConsoleUI {
     }
 
     public void start() {
+        ConsoleHelper.animateIntro();
+
         boolean running = true;
         while (running) {
             if (currentUser == null) {
