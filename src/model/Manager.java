@@ -7,6 +7,7 @@ package model;
  * <p>Managers have elevated access compared to other user roles.</p>
  * 
  * @author Group 10
+ * @version 1.0
  */
 public class Manager extends User {
 

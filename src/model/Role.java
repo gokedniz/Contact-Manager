@@ -7,6 +7,7 @@ package model;
  * <p>The roles include TESTER, JUNIOR_DEVELOPER, SENIOR_DEVELOPER, and MANAGER.</p>
  * 
  * @author Group 10
+ * @version 1.0
  */
 public enum Role {
     TESTER,

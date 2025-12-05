@@ -7,6 +7,7 @@ package model;
  * <p>Junior Developers have restricted access compared to other user roles.</p>
  * 
  * @author Group 10
+ * @version 1.0
  */
 public class JuniorDeveloper extends User {
 

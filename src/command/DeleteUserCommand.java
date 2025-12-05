@@ -4,6 +4,16 @@ import dao.ActivityLogDAO;
 import dao.UserDAO;
 import model.User;
 
+/**
+ * Command for deleting a user account from the system.
+ * 
+ * <p>Implements the Command pattern with safeguards and backup functionality.
+ * Prevents deletion of the admin user. Before deletion, the user data is backed up
+ * and all associated activity logs are removed. Undo restores the user account.</p>
+ * 
+ * @author Group 10
+ * @version 1.0
+ */
 public class DeleteUserCommand implements Command {
     private UserDAO userDAO;
     private ActivityLogDAO activityLogDAO;
@@ -12,6 +22,14 @@ public class DeleteUserCommand implements Command {
     private User backupUser;
     private boolean success;
 
+    /**
+     * Constructs a DeleteUserCommand.
+     * 
+     * @param userDAO The DAO for user database operations.
+     * @param activityLogDAO The DAO for logging activities.
+     * @param userIdToDelete The ID of the user to delete.
+     * @param adminId The ID of the admin performing this action (prevents self-deletion).
+     */
     public DeleteUserCommand(UserDAO userDAO, ActivityLogDAO activityLogDAO, int userIdToDelete, int adminId) {
         this.userDAO = userDAO;
         this.activityLogDAO = activityLogDAO;
@@ -19,6 +37,12 @@ public class DeleteUserCommand implements Command {
         this.adminId = adminId;
     }
 
+    /**
+     * Executes the delete user command.
+     * 
+     * <p>Prevents deletion if the target user is the admin. Backs up user data,
+     * removes activity logs, and deletes the user account. Logs the deletion.</p>
+     */
     @Override
     public void execute() {
         if (userIdToDelete == adminId) {
@@ -26,14 +50,6 @@ public class DeleteUserCommand implements Command {
             return;
         }
 
-        // Backup user data before delete
-        // We need to find the user first.
-        // Ideally the service should pass the User object, but ID is what we have.
-        // We can't easily get the user by ID from UserDAO as it only has
-        // getUserByUsername.
-        // Let's rely on the service passing the user object or add getUserById to DAO.
-        // For now, let's iterate all users to find the one (inefficient but works with
-        // current DAO).
         for (User u : userDAO.getAllUsers()) {
             if (u.getId() == userIdToDelete) {
                 backupUser = u;
@@ -50,6 +66,12 @@ public class DeleteUserCommand implements Command {
         }
     }
 
+    /**
+     * Undoes the delete user command by restoring the user account.
+     * 
+     * <p>Restores the user from backup. Note: The restored user may receive
+     * a new ID due to database auto-increment behavior.</p>
+     */
     @Override
     public void undo() {
         if (success && backupUser != null) {

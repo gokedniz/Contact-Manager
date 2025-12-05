@@ -10,6 +10,7 @@ package model;
  * </p>
  * 
  * @author Group 10
+ * @version 1.0
  */
 public abstract class User {
     private int id;

@@ -7,6 +7,7 @@ package model;
  * <p>Senior Developers have more access than Junior Developers but less than Managers.</p>
  * 
  * @author Group 10
+ * @version 1.0
  */
 public class SeniorDeveloper extends User {
 
