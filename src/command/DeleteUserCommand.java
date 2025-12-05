@@ -21,6 +21,11 @@ public class DeleteUserCommand implements Command {
 
     @Override
     public void execute() {
+        if (userIdToDelete == adminId) {
+            success = false;
+            return;
+        }
+
         // Backup user data before delete
         // We need to find the user first.
         // Ideally the service should pass the User object, but ID is what we have.

@@ -177,4 +177,18 @@ public class UserDAO {
             return false;
         }
     }
+
+    public boolean hasManager() {
+        String query = "SELECT COUNT(*) FROM users WHERE role = 'MANAGER'";
+        try (Connection conn = DatabaseConnection.getInstance().getConnection();
+                PreparedStatement stmt = conn.prepareStatement(query);
+                ResultSet rs = stmt.executeQuery()) {
+            if (rs.next()) {
+                return rs.getInt(1) > 0;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
 }

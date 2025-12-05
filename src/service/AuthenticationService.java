@@ -75,7 +75,10 @@ public class AuthenticationService {
             case SENIOR_DEVELOPER:
                 newUser = new model.SeniorDeveloper(tempId, username, firstName, lastName, passwordHash);
                 break;
-            case MANAGER: // Should not happen based on requirements but good to have
+            case MANAGER:
+                if (userDAO.hasManager()) {
+                    return false; // Manager already exists
+                }
                 newUser = new model.Manager(tempId, username, firstName, lastName, passwordHash);
                 break;
             default:
@@ -92,6 +95,61 @@ public class AuthenticationService {
     }
 
     public boolean updateUser(User currentUser, User userToUpdate) {
+        // Check if trying to promote to MANAGER
+        if (userToUpdate.getRole() == model.Role.MANAGER) {
+            // Check if a manager already exists
+            if (userDAO.hasManager()) {
+                // If a manager exists, we must check if it is the SAME user we are updating.
+                // If we are updating the current manager (e.g. changing name), it's fine.
+                // If we are promoting a DIFFERENT user to manager, it's NOT fine.
+
+                // We need to fetch the existing manager or check the ID of the user being
+                // updated.
+                // However, userDAO.hasManager() only returns boolean.
+                // Let's assume userToUpdate has the correct ID.
+                // We need to know if the user currently in DB with this ID is ALREADY a
+                // manager.
+                // OR if another user is a manager.
+
+                // Simpler logic:
+                // Get the current user from DB by ID to see their CURRENT role.
+                // If their current role is NOT manager, and we are trying to set it to MANAGER,
+                // and hasManager() is true, then we are trying to add a SECOND manager.
+
+                // But wait, hasManager() returns true if ANY manager exists.
+                // If I am the manager and I update myself, hasManager() is true.
+                // If I am a tester and I want to be manager, hasManager() is true (because the
+                // admin is manager).
+
+                // So, if hasManager() is true, we can ONLY allow update if the user being
+                // updated IS ALREADY the manager.
+                // We can check this by fetching the user from DB before update.
+                // But we don't have getUserById easily exposed here except via iterating
+                // getAllUsers or adding it.
+                // Let's iterate getAllUsers to find the userToUpdate's current role in DB.
+
+                User existingUserInDb = null;
+                for (User u : userDAO.getAllUsers()) {
+                    if (u.getId() == userToUpdate.getId()) {
+                        existingUserInDb = u;
+                        break;
+                    }
+                }
+
+                if (existingUserInDb != null) {
+                    // If the user in DB is NOT a manager, but we want to make them a manager...
+                    if (existingUserInDb.getRole() != model.Role.MANAGER) {
+                        // ...and a manager ALREADY exists (which we know is true because hasManager()
+                        // is true)
+                        // Then this is forbidden.
+                        return false;
+                    }
+                    // If existingUserInDb IS a manager, then we are just updating the existing
+                    // manager, which is allowed.
+                }
+            }
+        }
+
         if (userDAO.updateUser(userToUpdate)) {
             activityLogDAO.logAction(currentUser.getId(), "UPDATE_USER",
                     "Updated user: " + userToUpdate.getUsername() + " (ID: " + userToUpdate.getId() + ")");

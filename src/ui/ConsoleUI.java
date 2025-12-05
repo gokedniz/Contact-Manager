@@ -27,31 +27,56 @@ public class ConsoleUI {
     }
 
     public void start() {
-        helper.clearScreen();
-        helper.printAsciiArt();
-
         boolean running = true;
         while (running) {
             if (currentUser == null) {
-                helper.printMenuHeader("WELCOME GUEST");
-                helper.printMenuOption(1, "Login");
-                helper.printMenuOption(0, "Exit Application");
-                helper.printMenuFooter();
-
-                int choice = helper.readInt("Select an option");
-                if (choice == 1) {
-                    showLogin();
-                    // Login sonrası ekranı temizlemek için döngü başa dönecek
-                    if (currentUser != null)
-                        helper.clearScreen();
-                } else if (choice == 0) {
-                    running = false;
-                    helper.printInfo("Goodbye!");
-                } else {
-                    helper.printError("Invalid option.");
-                }
+                running = showGuestMenu();
             } else {
                 showMainMenu();
+            }
+        }
+    }
+
+    private boolean showGuestMenu() {
+        String errorMessage = null;
+        while (true) {
+            helper.clearScreen();
+            helper.printAsciiArt();
+            helper.printMenuHeader("WELCOME GUEST");
+            helper.printMenuOption(1, "Login");
+            helper.printMenuOption(0, "Exit Application");
+            helper.printMenuFooter();
+
+            if (errorMessage != null) {
+                helper.printError(errorMessage);
+                errorMessage = null;
+            }
+
+            String input = helper.readString("Select an option");
+            int choice;
+            try {
+                choice = Integer.parseInt(input);
+                // Strict check: input must match the string representation of the number
+                // (prevents 01, 001 etc.)
+                if (!String.valueOf(choice).equals(input)) {
+                    errorMessage = "Invalid number format. Please enter the number exactly.";
+                    continue;
+                }
+            } catch (NumberFormatException e) {
+                errorMessage = "Invalid number. Please try again.";
+                continue;
+            }
+
+            if (choice == 1) {
+                showLogin();
+                if (currentUser != null) {
+                    return true;
+                }
+            } else if (choice == 0) {
+                helper.printInfo("Goodbye!");
+                return false;
+            } else {
+                errorMessage = "Invalid option.";
             }
         }
     }
@@ -74,67 +99,91 @@ public class ConsoleUI {
     }
 
     private void showMainMenu() {
-        helper.clearScreen();
-        helper.printMenuHeader(currentUser.getRole() + " MENU");
+        String errorMessage = null;
 
-        // Her seferinde listeyi sıfırla
-        currentMenuActions = new ArrayList<>();
-        int displayNum = 1;
+        while (true) {
+            helper.clearScreen();
+            helper.printMenuHeader(currentUser.getRole() + " MENU");
 
-        // --- 1. SEÇENEKLERİ BELİRLE VE YAZDIR ---
+            // Her seferinde listeyi sıfırla
+            currentMenuActions = new ArrayList<>();
+            int displayNum = 1;
 
-        // Herkes için ortak
-        helper.printMenuOption(displayNum++, "List Contacts (Edit/Delete)");
-        currentMenuActions.add(1); // Orijinal Action ID: 1
+            // --- 1. SEÇENEKLERİ BELİRLE VE YAZDIR ---
 
-        helper.printMenuOption(displayNum++, "Search Contacts (Edit/Delete)");
-        currentMenuActions.add(2); // Orijinal Action ID: 2
+            // Herkes için ortak
+            helper.printMenuOption(displayNum++, "List Contacts (Edit/Delete)");
+            currentMenuActions.add(1); // Orijinal Action ID: 1
 
-        // Role Özel Seçenekler
-        if (hasPermission(Role.SENIOR_DEVELOPER)) {
-            helper.printMenuOption(displayNum++, "Add Contact");
-            currentMenuActions.add(3);
-        }
-        if (hasPermission(Role.MANAGER)) {
-            helper.printMenuOption(displayNum++, "View Statistics");
-            currentMenuActions.add(6);
-        }
-        if (hasPermission(Role.JUNIOR_DEVELOPER)) {
-            helper.printMenuOption(displayNum++, "Undo Last Operation");
-            currentMenuActions.add(7);
-        }
+            helper.printMenuOption(displayNum++, "Search Contacts (Edit/Delete)");
+            currentMenuActions.add(2); // Orijinal Action ID: 2
 
-        // Şifre Değiştirme (Herkes için)
-        helper.printMenuOption(displayNum++, "Change Password");
-        currentMenuActions.add(8);
+            // Role Özel Seçenekler
+            if (hasPermission(Role.SENIOR_DEVELOPER)) {
+                helper.printMenuOption(displayNum++, "Add Contact");
+                currentMenuActions.add(3);
+            }
+            if (hasPermission(Role.MANAGER)) {
+                helper.printMenuOption(displayNum++, "View Statistics");
+                currentMenuActions.add(6);
+            }
+            if (hasPermission(Role.JUNIOR_DEVELOPER)) {
+                helper.printMenuOption(displayNum++, "Undo Last Operation");
+                currentMenuActions.add(7);
+            }
 
-        if (hasPermission(Role.MANAGER)) {
-            helper.printMenuOption(displayNum++, "View Activity Logs");
-            currentMenuActions.add(9);
+            // Şifre Değiştirme (Herkes için)
+            helper.printMenuOption(displayNum++, "Change Password");
+            currentMenuActions.add(8);
 
-            helper.printMenuOption(displayNum++, "Add New User");
-            currentMenuActions.add(10);
+            if (hasPermission(Role.MANAGER)) {
+                helper.printMenuOption(displayNum++, "View Activity Logs");
+                currentMenuActions.add(9);
 
-            helper.printMenuOption(displayNum++, "Manage Users");
-            currentMenuActions.add(11);
-        }
+                helper.printMenuOption(displayNum++, "Add New User");
+                currentMenuActions.add(10);
 
-        // Logout her zaman en sonda ve 0 numara olsun
-        helper.printMenuOption(0, "Logout");
-        helper.printMenuFooter();
+                helper.printMenuOption(displayNum++, "Manage Users");
+                currentMenuActions.add(11);
+            }
 
-        // --- 2. SEÇİMİ AL VE YÖNLENDİR ---
-        int userChoice = helper.readInt("Select an option");
+            // Logout her zaman en sonda ve 0 numara olsun
+            helper.printMenuOption(0, "Logout");
+            helper.printMenuFooter();
 
-        if (userChoice == 0) {
-            handleMenuChoice(0); // Çıkış
-        } else if (userChoice > 0 && userChoice <= currentMenuActions.size()) {
-            // Kullanıcının girdiği "Sıra Numarası"nı, gerçek "Action ID"ye çeviriyoruz
-            int realActionId = currentMenuActions.get(userChoice - 1);
-            handleMenuChoice(realActionId);
-        } else {
-            helper.printError("Invalid option.");
-            helper.pressEnterToContinue();
+            if (errorMessage != null) {
+                helper.printError(errorMessage);
+                errorMessage = null;
+            }
+
+            // --- 2. SEÇİMİ AL VE YÖNLENDİR ---
+            String input = helper.readString("Select an option");
+            int userChoice;
+
+            try {
+                userChoice = Integer.parseInt(input);
+                // Strict check: input must match the string representation of the number
+                // (prevents 01, 001 etc.)
+                if (!String.valueOf(userChoice).equals(input)) {
+                    errorMessage = "Invalid number format. Please enter the number exactly.";
+                    continue;
+                }
+            } catch (NumberFormatException e) {
+                errorMessage = "Invalid number. Please try again.";
+                continue;
+            }
+
+            if (userChoice == 0) {
+                handleMenuChoice(0); // Çıkış
+                return;
+            } else if (userChoice > 0 && userChoice <= currentMenuActions.size()) {
+                // Kullanıcının girdiği "Sıra Numarası"nı, gerçek "Action ID"ye çeviriyoruz
+                int realActionId = currentMenuActions.get(userChoice - 1);
+                handleMenuChoice(realActionId);
+                return;
+            } else {
+                errorMessage = "Invalid option.";
+            }
         }
     }
 
@@ -237,7 +286,7 @@ public class ConsoleUI {
 
     private void listContacts() {
         helper.printTitle("ALL CONTACTS");
-        helper.printInfo("Sort keys: [N]ame, [S]urname, [E]mail. Append '-' for Desc (e.g., N-).");
+        helper.printInfo("Sort keys: [N]ame, [S]urname, [E]mail. Append '-' for Descending Order (e.g., N-).");
         String sortInput = helper.readString("Sort by (Enter for Default ID)");
 
         String sortBy = "id";
@@ -808,7 +857,15 @@ public class ConsoleUI {
             return;
         }
 
-        String confirm = helper.readString("Are you sure you want to delete user " + user.getUsername() + "? (y/n)");
+        String confirm;
+        while (true) {
+            confirm = helper.readString("Are you sure you want to delete user " + user.getUsername() + "? (y/n)");
+            if (confirm.equalsIgnoreCase("y") || confirm.equalsIgnoreCase("n")) {
+                break;
+            }
+            helper.printError("Invalid input. Please enter 'y' or 'n'.");
+        }
+
         if (confirm.equalsIgnoreCase("y")) {
             if (authService.deleteUser(currentUser, user.getId())) {
                 helper.printSuccess("User deleted successfully.");
