@@ -176,7 +176,8 @@ public class ConsoleUI {
     }
 
     private void handleMenuChoice(int choice) {
-        if (choice != 0) helper.clearScreen();
+        if (choice != 0)
+            helper.clearScreen();
 
         switch (choice) {
             case 0:
@@ -242,10 +243,10 @@ public class ConsoleUI {
         }
 
         helper.printTitle("SYSTEM STATISTICS & INSIGHTS");
-        
+
         // Verileri Service'ten çekiyoruz
         List<Contact> allContacts = contactService.getAllContacts();
-        
+
         // --- GRAFİK 1: OPTIONAL FIELD SATURATION (İSTEĞİN ÜZERİNE) ---
         // Hangi alanın kaç kişide dolu olduğunu sayıyoruz
         Map<String, Integer> optionalStats = new HashMap<>();
@@ -257,12 +258,18 @@ public class ConsoleUI {
         int birthDateCount = 0;
 
         for (Contact c : allContacts) {
-            if (c.getMiddleName() != null && !c.getMiddleName().isEmpty()) middleNameCount++;
-            if (c.getNickname() != null && !c.getNickname().isEmpty()) nicknameCount++;
-            if (c.getPhoneSecondary() != null && !c.getPhoneSecondary().isEmpty()) phoneSecCount++;
-            if (c.getEmail() != null && !c.getEmail().isEmpty()) emailCount++;
-            if (c.getLinkedinUrl() != null && !c.getLinkedinUrl().isEmpty()) linkedinCount++;
-            if (c.getBirthDate() != null) birthDateCount++;
+            if (c.getMiddleName() != null && !c.getMiddleName().isEmpty())
+                middleNameCount++;
+            if (c.getNickname() != null && !c.getNickname().isEmpty())
+                nicknameCount++;
+            if (c.getPhoneSecondary() != null && !c.getPhoneSecondary().isEmpty())
+                phoneSecCount++;
+            if (c.getEmail() != null && !c.getEmail().isEmpty())
+                emailCount++;
+            if (c.getLinkedinUrl() != null && !c.getLinkedinUrl().isEmpty())
+                linkedinCount++;
+            if (c.getBirthDate() != null)
+                birthDateCount++;
         }
 
         optionalStats.put("Middle Name", middleNameCount);
@@ -274,30 +281,35 @@ public class ConsoleUI {
 
         helper.printAnimatedHorizontalBarChart("OPTIONAL FIELDS COMPLETENESS", optionalStats);
 
-
         // --- GRAFİK 2: ALPHABETICAL DISTRIBUTION (ÖNERİM) ---
         // İsimlerin baş harflerine göre dağılım
         Map<String, Integer> alphaStats = new HashMap<>();
-        // Bucketları sıfırla başlat ki boş olsa bile grafikte 0 olarak görünsün (Tercihen)
+        // Bucketları sıfırla başlat ki boş olsa bile grafikte 0 olarak görünsün
+        // (Tercihen)
         // Ya da sadece olanları ekle. Biz dinamik yapalım.
-        
+
         for (Contact c : allContacts) {
             String name = c.getFirstName().toUpperCase();
             char firstChar = name.isEmpty() ? '?' : name.charAt(0);
-            
+
             String group;
-            if (firstChar >= 'A' && firstChar <= 'E') group = "A - E";
-            else if (firstChar >= 'F' && firstChar <= 'J') group = "F - J";
-            else if (firstChar >= 'K' && firstChar <= 'O') group = "K - O";
-            else if (firstChar >= 'P' && firstChar <= 'T') group = "P - T";
-            else if (firstChar >= 'U' && firstChar <= 'Z') group = "U - Z";
-            else group = "Other";
+            if (firstChar >= 'A' && firstChar <= 'E')
+                group = "A - E";
+            else if (firstChar >= 'F' && firstChar <= 'J')
+                group = "F - J";
+            else if (firstChar >= 'K' && firstChar <= 'O')
+                group = "K - O";
+            else if (firstChar >= 'P' && firstChar <= 'T')
+                group = "P - T";
+            else if (firstChar >= 'U' && firstChar <= 'Z')
+                group = "U - Z";
+            else
+                group = "Other";
 
             alphaStats.put(group, alphaStats.getOrDefault(group, 0) + 1);
         }
-        
-        helper.printAnimatedHorizontalBarChart("CONTACT NAME DISTRIBUTION (A-Z)", alphaStats);
 
+        helper.printAnimatedHorizontalBarChart("CONTACT NAME DISTRIBUTION (A-Z)", alphaStats);
 
         // --- GRAFİK 3: EMAIL DOMAIN DISTRIBUTION (MEVCUT OLANI GRAFİĞE ÇEVİRDİK) ---
         Map<String, Integer> domainStats = new HashMap<>();
@@ -307,7 +319,7 @@ public class ConsoleUI {
                 domainStats.put(domain, domainStats.getOrDefault(domain, 0) + 1);
             }
         }
-        
+
         helper.printAnimatedHorizontalBarChart("EMAIL DOMAIN DISTRIBUTION", domainStats);
 
         helper.pressEnterToContinue();
@@ -320,12 +332,18 @@ public class ConsoleUI {
         String sortInput = helper.readString("Sort by (Enter for Default ID)");
 
         String sortBy = "id";
-        if (sortInput.equalsIgnoreCase("n")) sortBy = "name_asc";
-        else if (sortInput.equalsIgnoreCase("n-")) sortBy = "name_desc";
-        else if (sortInput.equalsIgnoreCase("s")) sortBy = "surname_asc";
-        else if (sortInput.equalsIgnoreCase("s-")) sortBy = "surname_desc";
-        else if (sortInput.equalsIgnoreCase("e")) sortBy = "email_asc";
-        else if (sortInput.equalsIgnoreCase("e-")) sortBy = "email_desc";
+        if (sortInput.equalsIgnoreCase("n"))
+            sortBy = "name_asc";
+        else if (sortInput.equalsIgnoreCase("n-"))
+            sortBy = "name_desc";
+        else if (sortInput.equalsIgnoreCase("s"))
+            sortBy = "surname_asc";
+        else if (sortInput.equalsIgnoreCase("s-"))
+            sortBy = "surname_desc";
+        else if (sortInput.equalsIgnoreCase("e"))
+            sortBy = "email_asc";
+        else if (sortInput.equalsIgnoreCase("e-"))
+            sortBy = "email_desc";
 
         List<Contact> contacts = contactService.getContactsSorted(sortBy);
         List<String[]> tableData = convertContactsToTableData(contacts);
@@ -338,7 +356,7 @@ public class ConsoleUI {
     private void handleSearch() {
         helper.printTitle("SEARCH CONTACTS");
         System.out.println("Select fields (comma separated): 1.First, 2.Last, 3.Phone, 4.Email, 5.All");
-        
+
         List<String> fields = new ArrayList<>();
         while (true) {
             String fieldInput = helper.readString("Choice");
@@ -351,14 +369,25 @@ public class ConsoleUI {
             fields.clear();
             for (String choice : choices) {
                 String t = choice.trim();
-                if (!t.matches("[1-5]")) { valid = false; break; }
-                if (t.equals("1")) fields.add("first_name");
-                else if (t.equals("2")) fields.add("last_name");
-                else if (t.equals("3")) fields.add("phone_primary");
-                else if (t.equals("4")) fields.add("email");
-                else if (t.equals("5")) { fields.clear(); break; }
+                if (!t.matches("[1-5]")) {
+                    valid = false;
+                    break;
+                }
+                if (t.equals("1"))
+                    fields.add("first_name");
+                else if (t.equals("2"))
+                    fields.add("last_name");
+                else if (t.equals("3"))
+                    fields.add("phone_primary");
+                else if (t.equals("4"))
+                    fields.add("email");
+                else if (t.equals("5")) {
+                    fields.clear();
+                    break;
+                }
             }
-            if (valid) break;
+            if (valid)
+                break;
             helper.printError("Invalid selection.");
         }
 
@@ -392,11 +421,13 @@ public class ConsoleUI {
     }
 
     private void interactWithResults(List<Contact> contacts) {
-        if (contacts.isEmpty()) return;
+        if (contacts.isEmpty())
+            return;
         while (true) {
             System.out.println();
             int id = helper.readInt("Enter Contact ID to View/Edit/Delete (0 to Back)");
-            if (id == 0) return;
+            if (id == 0)
+                return;
 
             Contact selected = contacts.stream().filter(c -> c.getId() == id).findFirst().orElse(null);
             if (selected == null) {
@@ -455,31 +486,42 @@ public class ConsoleUI {
         helper.printInfo("Press Enter to keep current value.");
 
         String first = helper.readString("First Name [" + c.getFirstName() + "]");
-        if (!first.isEmpty()) c.setFirstName(first);
+        if (!first.isEmpty())
+            c.setFirstName(first);
 
         String middle = helper.readString("Middle Name [" + (c.getMiddleName() != null ? c.getMiddleName() : "") + "]");
-        if (!middle.isEmpty()) c.setMiddleName(middle);
+        if (!middle.isEmpty())
+            c.setMiddleName(middle);
 
         String last = helper.readString("Last Name [" + c.getLastName() + "]");
-        if (!last.isEmpty()) c.setLastName(last);
+        if (!last.isEmpty())
+            c.setLastName(last);
 
         String nick = helper.readString("Nickname [" + (c.getNickname() != null ? c.getNickname() : "") + "]");
-        if (!nick.isEmpty()) c.setNickname(nick);
+        if (!nick.isEmpty())
+            c.setNickname(nick);
 
         String phone1 = helper.readPhone("Primary Phone [" + c.getPhonePrimary() + "]", false);
-        if (phone1 != null) c.setPhonePrimary(phone1);
+        if (phone1 != null)
+            c.setPhonePrimary(phone1);
 
-        String phone2 = helper.readPhone("Secondary Phone [" + (c.getPhoneSecondary() != null ? c.getPhoneSecondary() : "") + "]", false);
-        if (phone2 != null) c.setPhoneSecondary(phone2);
+        String phone2 = helper.readPhone(
+                "Secondary Phone [" + (c.getPhoneSecondary() != null ? c.getPhoneSecondary() : "") + "]", false);
+        if (phone2 != null)
+            c.setPhoneSecondary(phone2);
 
         String email = helper.readEmail("Email [" + (c.getEmail() != null ? c.getEmail() : "") + "]", false);
-        if (email != null) c.setEmail(email);
+        if (email != null)
+            c.setEmail(email);
 
-        String linkedin = helper.readString("LinkedIn [" + (c.getLinkedinUrl() != null ? c.getLinkedinUrl() : "") + "]");
-        if (!linkedin.isEmpty()) c.setLinkedinUrl(linkedin);
+        String linkedin = helper
+                .readString("LinkedIn [" + (c.getLinkedinUrl() != null ? c.getLinkedinUrl() : "") + "]");
+        if (!linkedin.isEmpty())
+            c.setLinkedinUrl(linkedin);
 
         Date newDate = helper.readDate("Birth Date [" + c.getBirthDate() + "]");
-        if (newDate != null) c.setBirthDate(newDate);
+        if (newDate != null)
+            c.setBirthDate(newDate);
 
         if (contactService.updateContact(currentUser, c)) {
             helper.printSuccess("Contact updated.");
@@ -506,9 +548,6 @@ public class ConsoleUI {
         Date birth = helper.readDate("Birth Date (Optional)");
         String gender = helper.readGender("Gender (Optional)");
 
-<<<<<<< HEAD
-        // Tüm verileri tek seferde Constructor'a gönderiyoruz.
-        // Boş girilen (Optional) alanlar için veritabanına 'null' gönderiyoruz.
         Contact contact = new Contact(
                 first,
                 middle.isEmpty() ? null : middle,
@@ -520,10 +559,6 @@ public class ConsoleUI {
                 linkedin.isEmpty() ? null : linkedin,
                 birth,
                 gender);
-=======
-        Contact contact = new Contact(first, middle.isEmpty() ? null : middle, last, nick.isEmpty() ? null : nick,
-                phone1, phone2, email, linkedin.isEmpty() ? null : linkedin, birth);
->>>>>>> 7aba5b79207177b0fe24583470b04be064b7fafb
 
         if (contactService.addContact(currentUser, contact)) {
             helper.printSuccess("Contact added.");
@@ -535,7 +570,8 @@ public class ConsoleUI {
     private void handleChangePassword() {
         helper.printTitle("CHANGE PASSWORD");
         String oldPass = helper.readRequiredString("Old Password");
-        if (oldPass.equals("0")) return;
+        if (oldPass.equals("0"))
+            return;
         String newPass = helper.readRequiredString("New Password");
         String confirmPass = helper.readRequiredString("Confirm New Password");
 
@@ -544,9 +580,12 @@ public class ConsoleUI {
             return;
         }
         int result = authService.changePassword(currentUser, oldPass, newPass);
-        if (result == 0) helper.printSuccess("Password changed.");
-        else if (result == 1) helper.printError("Incorrect old password.");
-        else helper.printError("Error changing password.");
+        if (result == 0)
+            helper.printSuccess("Password changed.");
+        else if (result == 1)
+            helper.printError("Incorrect old password.");
+        else
+            helper.printError("Error changing password.");
     }
 
     private void showActivityLogs() {
@@ -555,61 +594,79 @@ public class ConsoleUI {
             return;
         }
         helper.printTitle("Activity Logs");
-        // ... (Log filter logic kept same but shortened for brevity here if needed, 
+        // ... (Log filter logic kept same but shortened for brevity here if needed,
         // but fully implemented in logic above)
         String usernameFilter = helper.readString("Filter User (Enter for All)");
         String actionFilter = helper.readString("Filter Action (LOGIN, ADD...)");
         String sortOrder = helper.readString("Newest First? (Y/N)").equalsIgnoreCase("N") ? "ASC" : "DESC";
-        
+
         List<model.ActivityLog> logs = activityLogService.getAllLogs(usernameFilter, actionFilter, sortOrder);
-        if (logs.isEmpty()) helper.printInfo("No logs.");
+        if (logs.isEmpty())
+            helper.printInfo("No logs.");
         else {
             List<String[]> data = new ArrayList<>();
             for (model.ActivityLog l : logs) {
-                data.add(new String[]{String.valueOf(l.getLogId()), String.valueOf(l.getTimestamp()), l.getUsername(), l.getActionType(), l.getDetails()});
+                data.add(new String[] { String.valueOf(l.getLogId()), String.valueOf(l.getTimestamp()), l.getUsername(),
+                        l.getActionType(), l.getDetails() });
             }
-            helper.printTable(new String[]{"ID","Time","User","Action","Details"}, data);
+            helper.printTable(new String[] { "ID", "Time", "User", "Action", "Details" }, data);
         }
     }
 
     private void handleAddNewUser() {
-        if (!hasPermission(Role.MANAGER)) { helper.printError("Access Denied."); return; }
+        if (!hasPermission(Role.MANAGER)) {
+            helper.printError("Access Denied.");
+            return;
+        }
         helper.printTitle("ADD NEW USER");
         String u = helper.readRequiredString("Username");
-        if (authService.isUserExists(u)) { helper.printError("Exists."); return; }
+        if (authService.isUserExists(u)) {
+            helper.printError("Exists.");
+            return;
+        }
         String p = helper.readRequiredString("Password");
         String f = helper.readRequiredString("First Name");
         String l = helper.readRequiredString("Last Name");
-        
+
         System.out.println("1.Tester 2.Junior 3.Senior");
         int r = helper.readInt("Role");
-        Role role = (r==1)?Role.TESTER : (r==2)?Role.JUNIOR_DEVELOPER : Role.SENIOR_DEVELOPER;
-        
-        if (authService.registerUser(currentUser, u, p, f, l, role)) helper.printSuccess("User added.");
-        else helper.printError("Failed.");
+        Role role = (r == 1) ? Role.TESTER : (r == 2) ? Role.JUNIOR_DEVELOPER : Role.SENIOR_DEVELOPER;
+
+        if (authService.registerUser(currentUser, u, p, f, l, role))
+            helper.printSuccess("User added.");
+        else
+            helper.printError("Failed.");
     }
 
     private void handleManageUsers() {
-        if (!hasPermission(Role.MANAGER)) { helper.printError("Access Denied."); return; }
+        if (!hasPermission(Role.MANAGER)) {
+            helper.printError("Access Denied.");
+            return;
+        }
         helper.printTitle("MANAGE USERS");
         List<User> users = authService.getAllUsers();
         List<String[]> data = new ArrayList<>();
-        users.forEach(u -> data.add(new String[]{String.valueOf(u.getId()), u.getUsername(), u.getRole().toString()}));
-        helper.printTable(new String[]{"ID","User","Role"}, data);
-        
+        users.forEach(
+                u -> data.add(new String[] { String.valueOf(u.getId()), u.getUsername(), u.getRole().toString() }));
+        helper.printTable(new String[] { "ID", "User", "Role" }, data);
+
         int id = helper.readInt("User ID to Edit/Delete (0 Cancel)");
-        if (id == 0) return;
-        User sel = users.stream().filter(u->u.getId()==id).findFirst().orElse(null);
-        if (sel == null) return;
-        
+        if (id == 0)
+            return;
+        User sel = users.stream().filter(u -> u.getId() == id).findFirst().orElse(null);
+        if (sel == null)
+            return;
+
         helper.printSectionHeader("SELECTED: " + sel.getUsername());
         helper.printMenuOption(1, "Edit");
         helper.printMenuOption(2, "Delete");
         int act = helper.readInt("Choice");
-        if (act==1) editUser(sel);
-        else if (act==2) deleteUser(sel);
+        if (act == 1)
+            editUser(sel);
+        else if (act == 2)
+            deleteUser(sel);
     }
-    
+
     private void editUser(User user) {
         // ... (Existing implementation kept same)
         // Kısaltmak için burayı tam yazmadım ama orijinal kodun aynısı kalabilir.
@@ -618,11 +675,16 @@ public class ConsoleUI {
     }
 
     private void deleteUser(User user) {
-        if(user.getId() == currentUser.getId()) { helper.printError("Cannot delete self."); return; }
+        if (user.getId() == currentUser.getId()) {
+            helper.printError("Cannot delete self.");
+            return;
+        }
         String c = helper.readString("Confirm delete? (y/n)");
-        if(c.equalsIgnoreCase("y")) {
-            if(authService.deleteUser(currentUser, user.getId())) helper.printSuccess("Deleted.");
-            else helper.printError("Failed.");
+        if (c.equalsIgnoreCase("y")) {
+            if (authService.deleteUser(currentUser, user.getId()))
+                helper.printSuccess("Deleted.");
+            else
+                helper.printError("Failed.");
         }
     }
 }

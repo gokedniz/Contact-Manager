@@ -40,7 +40,8 @@ public class ConsoleHelper {
         System.out.println("  / ____/___  ____  / /_____ ______/ /_   /  |/  /___ _____  ____ _____ ____  _____");
         System.out.println(" / /   / __ \\/ __ \\/ __/ __ `/ ___/ __/  / /|_/ / __ `/ __ \\/ __ `/ __ `/ _ \\/ ___/");
         System.out.println("/ /___/ /_/ / / / / /_/ /_/ / /__/ /_   / /  / / /_/ / / / / /_/ / /_/ /  __/ /    ");
-        System.out.println("\\____/\\____/_/ /_/\\__/\\__,_/\\___/\\__/  /_/  /_/\\__,_/_/ /_/\\__,_/\\__, /\\___/_/     ");
+        System.out.println(
+                "\\____/\\____/_/ /_/\\__/\\__,_/\\___/\\__/  /_/  /_/\\__,_/_/ /_/\\__,_/\\__, /\\___/_/     ");
         System.out.println("                                                                /____/                 ");
         System.out.println(RESET);
     }
@@ -54,7 +55,8 @@ public class ConsoleHelper {
     }
 
     public void printSectionHeader(String title) {
-        System.out.println("\n" + PURPLE + "── " + BOLD + title.toUpperCase() + RESET + PURPLE + " " + "─".repeat(40) + RESET);
+        System.out.println(
+                "\n" + PURPLE + "── " + BOLD + title.toUpperCase() + RESET + PURPLE + " " + "─".repeat(40) + RESET);
     }
 
     public void printError(String message) {
@@ -76,13 +78,16 @@ public class ConsoleHelper {
     // --- MENÜ SİSTEMİ ---
     public void printMenuHeader(String title) {
         int dashCount = 46 - title.length();
-        if (dashCount < 0) dashCount = 0;
-        System.out.println(PURPLE + "\n┌── " + BOLD + title + RESET + PURPLE + " " + "─".repeat(dashCount) + "┐" + RESET);
+        if (dashCount < 0)
+            dashCount = 0;
+        System.out
+                .println(PURPLE + "\n┌── " + BOLD + title + RESET + PURPLE + " " + "─".repeat(dashCount) + "┐" + RESET);
     }
 
     public void printMenuOption(int number, String description) {
         int padding = (number < 10) ? 45 : 44;
-        System.out.printf(PURPLE + "│ " + CYAN + "[%d]" + RESET + " %-" + padding + "s" + PURPLE + "│%n" + RESET, number, description);
+        System.out.printf(PURPLE + "│ " + CYAN + "[%d]" + RESET + " %-" + padding + "s" + PURPLE + "│%n" + RESET,
+                number, description);
     }
 
     public void printMenuFooter() {
@@ -103,7 +108,8 @@ public class ConsoleHelper {
 
         for (String[] row : data) {
             for (int i = 0; i < row.length; i++) {
-                if (row[i] == null) row[i] = "-";
+                if (row[i] == null)
+                    row[i] = "-";
                 if (row[i].length() > colWidths[i]) {
                     colWidths[i] = row[i].length();
                 }
@@ -111,7 +117,8 @@ public class ConsoleHelper {
         }
 
         StringBuilder separator = new StringBuilder("┼");
-        for (int w : colWidths) separator.append("─".repeat(w + 2)).append("┼");
+        for (int w : colWidths)
+            separator.append("─".repeat(w + 2)).append("┼");
 
         String topBorder = separator.toString().replace("┼", "┬");
         String midBorder = separator.toString();
@@ -166,7 +173,8 @@ public class ConsoleHelper {
         while (true) {
             System.out.print(YELLOW + "➜ " + prompt + " (DD-MM-YYYY): " + RESET);
             String input = scanner.nextLine().trim();
-            if (input.isEmpty()) return null;
+            if (input.isEmpty())
+                return null;
             try {
                 // Parse using d-M-uuuu pattern which handles both 05-12-2025 and 5-12-2025
                 // We use 'uuuu' for year in STRICT mode instead of 'yyyy'
@@ -187,7 +195,8 @@ public class ConsoleHelper {
     public String readRequiredString(String prompt) {
         while (true) {
             String input = readString(prompt);
-            if (!input.isEmpty()) return input;
+            if (!input.isEmpty())
+                return input;
             printError("This field cannot be empty.");
         }
     }
@@ -196,7 +205,8 @@ public class ConsoleHelper {
         while (true) {
             String input = readString(prompt);
             if (input.isEmpty()) {
-                if (!required) return null;
+                if (!required)
+                    return null;
                 printError("Email is required.");
                 continue;
             }
@@ -223,7 +233,8 @@ public class ConsoleHelper {
         while (true) {
             String input = readString(prompt);
             if (input.isEmpty()) {
-                if (!required) return null;
+                if (!required)
+                    return null;
                 printError("Phone number is required.");
                 continue;
             }
@@ -234,7 +245,6 @@ public class ConsoleHelper {
         }
     }
 
-<<<<<<< HEAD
     public String readGender(String prompt) {
         while (true) {
             String input = readString(prompt + " (K/E)");
@@ -252,23 +262,21 @@ public class ConsoleHelper {
     }
 
     // --- GRAFİK ÇİZİCİ
-    public void printHorizontalBarChart(String title, java.util.Map<String, Integer> data) {
-=======
-    // --- ANİMASYONLU GRAFİK ÇİZİCİ ---
     public void printAnimatedHorizontalBarChart(String title, java.util.Map<String, Integer> data) {
->>>>>>> 7aba5b79207177b0fe24583470b04be064b7fafb
         if (data.isEmpty()) {
             printInfo("No data to visualize for: " + title);
             return;
         }
 
         // Toplam değeri hesapla (Yüzde hesabı için)
-        // Eğer veri tipi dağılım değilse (örn: toplam sayı sayma) en büyük değere göre scale edebiliriz.
+        // Eğer veri tipi dağılım değilse (örn: toplam sayı sayma) en büyük değere göre
+        // scale edebiliriz.
         // Ancak burada yüzde gösterimi için toplamı alıyoruz.
         int total = data.values().stream().mapToInt(Integer::intValue).sum();
-        
+
         // Eğer total 0 ise (örn: tüm değerler 0) hata vermemesi için 1 yapalım
-        if (total == 0) total = 1;
+        if (total == 0)
+            total = 1;
 
         // En uzun etiketi bul (Hizalama için)
         int maxKeyLength = data.keySet().stream().mapToInt(String::length).max().orElse(10);
@@ -288,15 +296,16 @@ public class ConsoleHelper {
 
             // Yüzde hesabı
             double percentage = ((double) value / total) * 100;
-            
+
             // Çubuk uzunluğu (Maksimum 40 karakter)
             // Ancak "Opsiyonel Alanlar" grafiğinde total mantığı biraz farklı işleyebilir
-            // (Çünkü her kişi her alana sahip olabilir). 
+            // (Çünkü her kişi her alana sahip olabilir).
             // Yine de görsel tutarlılık için bu formül iş görür.
             int barLength = (int) ((percentage * 40) / 100);
-            
+
             // Eğer değer var ama bar hesaplamada 0 çıkıyorsa en az 1 karakter göster
-            if (barLength == 0 && value > 0) barLength = 1;
+            if (barLength == 0 && value > 0)
+                barLength = 1;
 
             String color = colors[colorIdx % colors.length];
 
