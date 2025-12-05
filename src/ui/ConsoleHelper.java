@@ -7,19 +7,25 @@ import java.util.Scanner;
 /**
  * Utility class for console UI interactions and formatting.
  * 
- * <p>Provides methods for displaying formatted output with ANSI color codes, user input handling,
- * and dynamic table generation. Supports validation for various input types including email,
- * phone numbers, dates, and custom string validation. Includes ASCII art and themed UI components
- * for menu systems and data visualization.</p>
+ * <p>
+ * Provides methods for displaying formatted output with ANSI color codes, user
+ * input handling,
+ * and dynamic table generation. Supports validation for various input types
+ * including email,
+ * phone numbers, dates, and custom string validation. Includes ASCII art and
+ * themed UI components
+ * for menu systems and data visualization.
+ * </p>
  * 
- * <p><strong>Features:</strong>
+ * <p>
+ * <strong>Features:</strong>
  * <ul>
- *   <li>Color-coded console output with ANSI codes</li>
- *   <li>Menu system with formatted headers, options, and footers</li>
- *   <li>Dynamic table rendering with automatic column width calculation</li>
- *   <li>Input validation for email, phone, date, and numeric values</li>
- *   <li>Animated horizontal bar charts for data visualization</li>
- *   <li>Screen management (clear, pause on input)</li>
+ * <li>Color-coded console output with ANSI codes</li>
+ * <li>Menu system with formatted headers, options, and footers</li>
+ * <li>Dynamic table rendering with automatic column width calculation</li>
+ * <li>Input validation for email, phone, date, and numeric values</li>
+ * <li>Animated horizontal bar charts for data visualization</li>
+ * <li>Screen management (clear, pause on input)</li>
  * </ul>
  * </p>
  * 
@@ -53,7 +59,9 @@ public class ConsoleHelper {
     /**
      * Waits for user to press ENTER before continuing.
      * 
-     * <p>Displays a yellow prompt and reads input from user.</p>
+     * <p>
+     * Displays a yellow prompt and reads input from user.
+     * </p>
      */
     public void pressEnterToContinue() {
         System.out.println(YELLOW + "\n➜ Press ENTER to return to menu..." + RESET);
@@ -63,7 +71,9 @@ public class ConsoleHelper {
     /**
      * Prints ASCII art logo for Contact Manager application.
      * 
-     * <p>Displays the application title in cyan bold text with decorative characters.</p>
+     * <p>
+     * Displays the application title in cyan bold text with decorative characters.
+     * </p>
      */
     public void printAsciiArt() {
         System.out.println(CYAN + BOLD);
@@ -151,7 +161,7 @@ public class ConsoleHelper {
     /**
      * Prints a single menu option with number and description.
      * 
-     * @param number The menu option number.
+     * @param number      The menu option number.
      * @param description The description of the menu option.
      */
     public void printMenuOption(int number, String description) {
@@ -170,11 +180,14 @@ public class ConsoleHelper {
     /**
      * Prints a formatted table with headers and data rows.
      * 
-     * <p>Automatically calculates column widths based on header and data content.
-     * Uses box-drawing characters for borders. Data must match header count.</p>
+     * <p>
+     * Automatically calculates column widths based on header and data content.
+     * Uses box-drawing characters for borders. Data must match header count.
+     * </p>
      * 
      * @param headers Array of column header names.
-     * @param data List of rows, where each row is a String array matching header count.
+     * @param data    List of rows, where each row is a String array matching header
+     *                count.
      */
     public void printTable(String[] headers, List<String[]> data) {
         if (data.isEmpty()) {
@@ -246,7 +259,9 @@ public class ConsoleHelper {
     /**
      * Reads an integer from the user with validation.
      * 
-     * <p>Continuously prompts until valid integer is entered.</p>
+     * <p>
+     * Continuously prompts until valid integer is entered.
+     * </p>
      * 
      * @param prompt The prompt to display.
      * @return The parsed integer value.
@@ -266,8 +281,10 @@ public class ConsoleHelper {
     /**
      * Reads a date from the user with validation.
      * 
-     * <p>Accepts dates in DD-MM-YYYY format. Rejects future dates.
-     * Returns null if input is empty (optional field).</p>
+     * <p>
+     * Accepts dates in DD-MM-YYYY format. Rejects future dates.
+     * Returns null if input is empty (optional field).
+     * </p>
      * 
      * @param prompt The prompt to display.
      * @return A Date object, or null if input is empty.
@@ -302,7 +319,9 @@ public class ConsoleHelper {
     /**
      * Reads a required string from the user (cannot be empty).
      * 
-     * <p>Repeatedly prompts until non-empty input is provided.</p>
+     * <p>
+     * Repeatedly prompts until non-empty input is provided.
+     * </p>
      * 
      * @param prompt The prompt to display.
      * @return The trimmed user input (guaranteed non-empty).
@@ -319,11 +338,15 @@ public class ConsoleHelper {
     /**
      * Reads and validates an email address.
      * 
-     * <p>Validates email format against standard pattern: alphanumeric._%+-@domain.TLD.
-     * Rejects emails with spaces. Optionally allows empty input.</p>
+     * <p>
+     * Validates email format against standard pattern:
+     * alphanumeric._%+-@domain.TLD.
+     * Rejects emails with spaces. Optionally allows empty input.
+     * </p>
      * 
-     * @param prompt The prompt to display.
-     * @param required If true, empty input is rejected. If false, returns null on empty input.
+     * @param prompt   The prompt to display.
+     * @param required If true, empty input is rejected. If false, returns null on
+     *                 empty input.
      * @return A valid email address, or null if optional and empty.
      */
     public String readEmail(String prompt, boolean required) {
@@ -351,11 +374,14 @@ public class ConsoleHelper {
     /**
      * Reads and validates a phone number.
      * 
-     * <p>Accepts format: optional +, digits, spaces, and dashes (7-20 characters).
-     * Optionally allows empty input.</p>
+     * <p>
+     * Accepts format: optional +, digits, spaces, and dashes (7-20 characters).
+     * Optionally allows empty input.
+     * </p>
      * 
-     * @param prompt The prompt to display.
-     * @param required If true, empty input is rejected. If false, returns null on empty input.
+     * @param prompt   The prompt to display.
+     * @param required If true, empty input is rejected. If false, returns null on
+     *                 empty input.
      * @return A valid phone number, or null if optional and empty.
      */
     public String readPhone(String prompt, boolean required) {
@@ -377,8 +403,10 @@ public class ConsoleHelper {
     /**
      * Reads gender input from the user.
      * 
-     * <p>Accepts 'K' (Kadın/Female) or 'E' (Erkek/Male), case-insensitive.
-     * Returns null if input is empty.</p>
+     * <p>
+     * Accepts 'K' (Kadın/Female) or 'E' (Erkek/Male), case-insensitive.
+     * Returns null if input is empty.
+     * </p>
      * 
      * @param prompt The prompt to display.
      * @return "K" for female, "E" for male, or null if empty.
@@ -402,12 +430,14 @@ public class ConsoleHelper {
     /**
      * Prints an animated horizontal bar chart for data visualization.
      * 
-     * <p>Displays data sorted by value in descending order with percentage labels.
+     * <p>
+     * Displays data sorted by value in descending order with percentage labels.
      * Uses rotating color scheme and block characters for visual appeal.
-     * Useful for statistics and distribution analysis.</p>
+     * Useful for statistics and distribution analysis.
+     * </p>
      * 
      * @param title The chart title (section header).
-     * @param data A map of labels to integer values to visualize.
+     * @param data  A map of labels to integer values to visualize.
      */
     public void printAnimatedHorizontalBarChart(String title, java.util.Map<String, Integer> data) {
         if (data.isEmpty()) {
@@ -436,13 +466,26 @@ public class ConsoleHelper {
             if (barLength == 0 && value > 0)
                 barLength = 1;
 
-            String bar = "█".repeat(barLength);
             String color = colors[colorIdx % colors.length];
 
-            System.out.printf(
-                    WHITE + "%" + maxKeyLength + "s " + YELLOW + "│ " + color + "%-40s " + WHITE + "%d (%%%.1f)%n"
-                            + RESET,
-                    label, bar, value, percentage);
+            // 1. Print label and separator
+            System.out.printf(WHITE + "%" + maxKeyLength + "s " + YELLOW + "│ " + color, label);
+
+            // 2. Print bar growing char by char
+            for (int i = 0; i < barLength; i++) {
+                System.out.print("█");
+                try {
+                    Thread.sleep(50); // growing speed
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+            }
+
+            // 3. Fill remaining space
+            System.out.print(" ".repeat(40 - barLength));
+
+            // 4. Print value and newline
+            System.out.printf(WHITE + " %d (%%%.1f)%n" + RESET, value, percentage);
 
             colorIdx++;
         }
@@ -576,6 +619,92 @@ public class ConsoleHelper {
             System.out.println(line);
             Thread.sleep(50);
         }
-        Thread.sleep(600);
+        Thread.sleep(1500);
+    }
+
+    public static void animateOutro() {
+        System.out.println(CYAN);
+        try {
+            System.out.println("\n\n" + "=".repeat(60));
+
+            // --- SPECIAL THANKS ---
+            String[] specialThanks = {
+                    "   _____ ____  _________________    __    ______  __  ___    _   ____ __ _____ ",
+                    "  / ___// __ \\/ ____/ ____/  _/   |  / /   /_  __/ / / /   |  / | / // //_// ___/",
+                    "  \\__ \\/ /_/ / __/ / /    / // /| | / /     / /   / /_/ /| | /  |/ // ,<   \\__ \\ ",
+                    " ___/ / ____/ /___/ /___ / // ___ |/ /___  / /   / __  / ___ |/ /|  // /| | ___/ / ",
+                    "/____/_/   /_____/\\____/___/_/  |_/_____/ /_/   /_/ /_/_/  |_/_/ |_/_/ |_|/____/  "
+            };
+            printWithDelay(specialThanks, 100);
+
+            System.out.println("=".repeat(60) + "\n");
+            Thread.sleep(1000);
+
+            // --- ASST. PROF. ---
+            // Biraz daha küçük bir font ile unvan
+            String[] asstProf = {
+                    "    ___   _____ _____ ______      ____  ____  ____  ______",
+                    "   /   | / ___// ___//_  __/     / __ \\/ __ \\/ __ \\/ ____/",
+                    "  / /| | \\__ \\ \\__ \\  / /       / /_/ / /_/ / / / / /_    ",
+                    " / ___ |___/ /___/ / / /       / ____/ _, _/ /_/ / __/    ",
+                    "/_/  |_/____//____/ /_/       /_/   /_/ |_|\\____/_/       "
+            };
+            printWithDelay(asstProf, 100);
+
+            Thread.sleep(500);
+
+            // --- ILKTAN AR ---
+            printNameBlock(new String[] {
+                    "    ____ __  __ __ ______  ___    _   __     ___    ____ ",
+                    "   /  _// / / //_//_  __/ /   |  / | / /    /   |  / __ \\",
+                    "   / / / / / ,<    / /   / /| | /  |/ /    / /| | / /_/ /",
+                    " _/ / / /___/| |  / /   / ___ |/ /|  /    / ___ |/ _, _/ ",
+                    "/___//_____/_| |_/_/   /_/  |_/_/ |_/    /_/  |_/_/ |_|  "
+            });
+
+            Thread.sleep(1000);
+
+            // --- AND ---
+            String[] andText = {
+                    "             ___    _   __ ____ ",
+                    "            /   |  / | / // __ \\",
+                    "           / /| | /  |/ // / / /",
+                    "          / ___ |/ /|  // /_/ / ",
+                    "         /_/  |_/_/ |_//_____/  "
+            };
+            printWithDelay(andText, 150);
+
+            Thread.sleep(1000);
+
+            // --- FATIH GOLGE ---
+            printNameBlock(new String[] {
+                    "    ______ ___  ______ ____ __  __   ______ ______ __    ______ ______",
+                    "   / ____//   |/_  __//  _// / / /  / ____// __  // /   / ____// ____/",
+                    "  / /_   / /| | / /   / / / /_/ /  / / __ / / / // /   / / __ / __/   ",
+                    " / __/  / ___ |/ /  _/ / / __  /  / /_/ // /_/ // /___/ /_/ // /___   ",
+                    "/_/    /_/  |_/_/  /___//_/ /_/   \\____/ \\____//_____/\\____//_____/   "
+            });
+
+            Thread.sleep(1500);
+
+            // --- GOODBYE ---
+            String[] goodbye = {
+                    "   ______ ____  ____  ____  ____  __  __ ______",
+                    "  / ____// __ \\/ __ \\/ __ \\/ __ ) \\ \\/ // ____/",
+                    " / / __ / / / / / / / / / / __  |  \\  // __/   ",
+                    "/ /_/ // /_/ / /_/ / /_/ / /_/ /   / // /___   ",
+                    "\\____/ \\____/\\____/_____/_____/   /_//_____/   "
+            };
+
+            System.out.println("\n" + "=".repeat(60) + "\n");
+            printWithDelay(goodbye, 200);
+
+            System.out.println("\n" + "=".repeat(60));
+            Thread.sleep(1000);
+            System.out.println(RESET);
+
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
     }
 }

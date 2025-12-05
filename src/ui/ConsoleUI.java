@@ -15,17 +15,25 @@ import java.util.Map;
 /**
  * Main console user interface controller for the Contact Manager application.
  * 
- * <p>Manages the entire user interaction flow including login/logout, main menu navigation,
- * and delegation to specific operation handlers. Implements role-based access control
- * to restrict features based on user permissions. All operations are logged and support
- * undo functionality through the command pattern.</p>
+ * <p>
+ * Manages the entire user interaction flow including login/logout, main menu
+ * navigation,
+ * and delegation to specific operation handlers. Implements role-based access
+ * control
+ * to restrict features based on user permissions. All operations are logged and
+ * support
+ * undo functionality through the command pattern.
+ * </p>
  * 
- * <p><strong>User Roles & Permissions:</strong>
+ * <p>
+ * <strong>User Roles & Permissions:</strong>
  * <ul>
- *   <li><strong>Tester:</strong> View only</li>
- *   <li><strong>Junior Developer:</strong> View, edit names only, undo</li>
- *   <li><strong>Senior Developer:</strong> View, add, edit full, delete, undo</li>
- *   <li><strong>Manager:</strong> All permissions + user management + statistics + activity logs</li>
+ * <li><strong>Tester:</strong> View only</li>
+ * <li><strong>Junior Developer:</strong> View, edit names only, undo</li>
+ * <li><strong>Senior Developer:</strong> View, add, edit full, delete,
+ * undo</li>
+ * <li><strong>Manager:</strong> All permissions + user management + statistics
+ * + activity logs</li>
  * </ul>
  * </p>
  * 
@@ -50,10 +58,13 @@ public class ConsoleUI {
     /**
      * Starts the console UI loop.
      * 
-     * <p>Runs the main application loop: shows guest menu when not authenticated
-     * and the main menu after successful login.</p>
+     * <p>
+     * Runs the main application loop: shows guest menu when not authenticated
+     * and the main menu after successful login.
+     * </p>
      */
     public void start() {
+
         ConsoleHelper.animateIntro();
 
         boolean running = true;
@@ -117,8 +128,10 @@ public class ConsoleUI {
     /**
      * Displays the login prompt and attempts to authenticate the user.
      * 
-     * <p>On successful authentication, sets `currentUser`. On failure, shows an error
-     * message and waits for ENTER.</p>
+     * <p>
+     * On successful authentication, sets `currentUser`. On failure, shows an error
+     * message and waits for ENTER.
+     * </p>
      */
     private void showLogin() {
         helper.clearScreen();
@@ -139,14 +152,19 @@ public class ConsoleUI {
     /**
      * Displays the main menu for authenticated users.
      * 
-     * <p>Shows different menu options based on user role. Includes contact management,
-     * password change, and role-specific features (stats, user management, activity logs).</p>
+     * <p>
+     * Shows different menu options based on user role. Includes contact management,
+     * password change, and role-specific features (stats, user management, activity
+     * logs).
+     * </p>
      */
     private void showMainMenu() {
         String errorMessage = null;
 
         while (true) {
             helper.clearScreen();
+            System.out.println(
+                    ConsoleHelper.GREEN + "\nWelcome again " + currentUser.getFirstName() + ConsoleHelper.RESET);
             helper.printMenuHeader(currentUser.getRole() + " MENU");
 
             currentMenuActions = new ArrayList<>();
@@ -220,7 +238,9 @@ public class ConsoleUI {
     /**
      * Checks if the current user has at least the minimum required role.
      * 
-     * <p>Uses role ordinal values to determine permission hierarchy.</p>
+     * <p>
+     * Uses role ordinal values to determine permission hierarchy.
+     * </p>
      * 
      * @param minRole The minimum required role.
      * @return true if user's role ordinal >= minRole's ordinal.
@@ -295,11 +315,12 @@ public class ConsoleUI {
     /**
      * Displays system statistics and insights (Manager only).
      * 
-     * <p>Shows three visualizations:
+     * <p>
+     * Shows three visualizations:
      * <ul>
-     *   <li>Optional fields completeness (middle name, nickname, email, etc.)</li>
-     *   <li>Contact name distribution by first letter (A-E, F-J, etc.)</li>
-     *   <li>Email domain distribution chart</li>
+     * <li>Optional fields completeness (middle name, nickname, email, etc.)</li>
+     * <li>Contact name distribution by first letter (A-E, F-J, etc.)</li>
+     * <li>Email domain distribution chart</li>
      * </ul>
      * </p>
      */
@@ -387,8 +408,10 @@ public class ConsoleUI {
     /**
      * Lists all contacts with optional sorting and interaction options.
      * 
-     * <p>Allows user to sort by name, surname, or email (ascending/descending).
-     * Displays table and allows selecting contacts for view/edit/delete operations.</p>
+     * <p>
+     * Allows user to sort by name, surname, or email (ascending/descending).
+     * Displays table and allows selecting contacts for view/edit/delete operations.
+     * </p>
      */
     private void listContacts() {
         helper.printTitle("ALL CONTACTS");
@@ -421,8 +444,11 @@ public class ConsoleUI {
     /**
      * Handles contact search with field selection.
      * 
-     * <p>Allows filtering search by specific fields (first name, last name, phone, email)
-     * or searching all fields. Results can be interacted with for edit/delete.</p>
+     * <p>
+     * Allows filtering search by specific fields (first name, last name, phone,
+     * email)
+     * or searching all fields. Results can be interacted with for edit/delete.
+     * </p>
      */
     private void handleSearch() {
         helper.printTitle("SEARCH CONTACTS");
@@ -507,8 +533,10 @@ public class ConsoleUI {
     /**
      * Handles user interaction with search/list results.
      * 
-     * <p>Allows selecting a contact by ID and performing edit or delete operations.
-     * Checks permissions before allowing modifications.</p>
+     * <p>
+     * Allows selecting a contact by ID and performing edit or delete operations.
+     * Checks permissions before allowing modifications.
+     * </p>
      * 
      * @param contacts The list of contact results to interact with.
      */
@@ -573,8 +601,10 @@ public class ConsoleUI {
     /**
      * Edits a contact with role-based field restrictions.
      * 
-     * <p>Senior and Manager can edit all fields. Junior can only edit names.
-     * Pressing Enter keeps current value. Phone and email have format validation.</p>
+     * <p>
+     * Senior and Manager can edit all fields. Junior can only edit names.
+     * Pressing Enter keeps current value. Phone and email have format validation.
+     * </p>
      * 
      * @param c The contact to edit.
      */
@@ -634,8 +664,10 @@ public class ConsoleUI {
     /**
      * Adds a new contact (Senior Developer and Manager only).
      * 
-     * <p>Validates all inputs including email format and phone format.
-     * Optional fields can be left empty.</p>
+     * <p>
+     * Validates all inputs including email format and phone format.
+     * Optional fields can be left empty.
+     * </p>
      */
     private void addContact() {
         if (!hasPermission(Role.SENIOR_DEVELOPER)) {
@@ -661,7 +693,7 @@ public class ConsoleUI {
                 last,
                 nick.isEmpty() ? null : nick,
                 phone1,
-                phone2, 
+                phone2,
                 email,
                 linkedin.isEmpty() ? null : linkedin,
                 birth,
@@ -677,8 +709,10 @@ public class ConsoleUI {
     /**
      * Handles password change operation with validation.
      * 
-     * <p>Verifies old password and confirms new password match.
-     * Returns appropriate error messages for different failure cases.</p>
+     * <p>
+     * Verifies old password and confirms new password match.
+     * Returns appropriate error messages for different failure cases.
+     * </p>
      */
     private void handleChangePassword() {
         helper.printTitle("CHANGE PASSWORD");
@@ -704,8 +738,10 @@ public class ConsoleUI {
     /**
      * Displays activity logs with optional filtering (Manager only).
      * 
-     * <p>Allows filtering by username and action type.
-     * Results sorted by timestamp (newest or oldest first).</p>
+     * <p>
+     * Allows filtering by username and action type.
+     * Results sorted by timestamp (newest or oldest first).
+     * </p>
      */
     private void showActivityLogs() {
         if (!hasPermission(Role.MANAGER)) {
@@ -733,8 +769,10 @@ public class ConsoleUI {
     /**
      * Handles user registration with role assignment (Manager only).
      * 
-     * <p>Allows creating users with Tester, Junior, or Senior roles.
-     * Cannot create additional Managers (system allows only one).</p>
+     * <p>
+     * Allows creating users with Tester, Junior, or Senior roles.
+     * Cannot create additional Managers (system allows only one).
+     * </p>
      */
     private void handleAddNewUser() {
         if (!hasPermission(Role.MANAGER)) {
@@ -764,7 +802,9 @@ public class ConsoleUI {
     /**
      * Displays all users for management (Manager only).
      * 
-     * <p>Shows user list and allows selecting a user for edit or delete.</p>
+     * <p>
+     * Shows user list and allows selecting a user for edit or delete.
+     * </p>
      */
     private void handleManageUsers() {
         if (!hasPermission(Role.MANAGER)) {
@@ -775,8 +815,14 @@ public class ConsoleUI {
         List<User> users = authService.getAllUsers();
         List<String[]> data = new ArrayList<>();
         users.forEach(
-                u -> data.add(new String[] { String.valueOf(u.getId()), u.getUsername(), u.getRole().toString() }));
-        helper.printTable(new String[] { "ID", "User", "Role" }, data);
+                u -> data.add(new String[] {
+                        String.valueOf(u.getId()),
+                        u.getUsername(),
+                        u.getFirstName(),
+                        u.getLastName(),
+                        u.getRole().toString()
+                }));
+        helper.printTable(new String[] { "ID", "Username", "First Name", "Last Name", "Role" }, data);
 
         int id = helper.readInt("User ID to Edit/Delete (0 Cancel)");
         if (id == 0)
@@ -788,8 +834,11 @@ public class ConsoleUI {
         helper.printSectionHeader("SELECTED: " + sel.getUsername());
         helper.printMenuOption(1, "Edit");
         helper.printMenuOption(2, "Delete");
+        helper.printMenuOption(0, "Go Back");
         int act = helper.readInt("Choice");
-        if (act == 1)
+        if (act == 0)
+            return;
+        else if (act == 1)
             editUser(sel);
         else if (act == 2)
             deleteUser(sel);
@@ -807,7 +856,10 @@ public class ConsoleUI {
     /**
      * Deletes a user with confirmation (Manager only).
      * 
-     * <p>Prevents user from deleting themselves. Requires confirmation before deletion.</p>
+     * <p>
+     * Prevents user from deleting themselves. Requires confirmation before
+     * deletion.
+     * </p>
      * 
      * @param user The user to delete.
      */
@@ -816,12 +868,22 @@ public class ConsoleUI {
             helper.printError("Cannot delete self.");
             return;
         }
-        String c = helper.readString("Confirm delete? (y/n)");
-        if (c.equalsIgnoreCase("y")) {
-            if (authService.deleteUser(currentUser, user.getId()))
-                helper.printSuccess("Deleted.");
-            else
-                helper.printError("Failed.");
+        while (true) {
+            String c = helper.readString("Confirm delete? (y/n)");
+            if (c.equalsIgnoreCase("y")) {
+                if (authService.deleteUser(currentUser, user.getId())) {
+                    helper.printSuccess("Deleted.");
+                    return;
+                } else {
+                    helper.printError("Failed.");
+                    return;
+                }
+            } else if (c.equalsIgnoreCase("n")) {
+                helper.printInfo("Cancelled.");
+                return;
+            } else {
+                helper.printError("Invalid input. Please enter 'y' or 'n'.");
+            }
         }
     }
 }
