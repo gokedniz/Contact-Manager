@@ -124,7 +124,7 @@ public class Eyfel {
 
         if (System.getProperty("os.name").toLowerCase().contains("win")) {
             // Windows
-            MP3_PATH = "je veux kısa.mp3";
+            MP3_PATH = "C:\\je veux kısa.mp3";
             MUSIC_PLAYER = "cmd.exe";
         } else {
             // macOS
@@ -149,7 +149,8 @@ public class Eyfel {
 
         // Four 4-second transitions (4 + 4 + 4 + 4 = 16 seconds/cycle)
 
-        // For 68 seconds total (song), closest full cycle count is 4 (4 * 16 = 64 seconds).
+        // For 68 seconds total (song), closest full cycle count is 4 (4 * 16 = 64
+        // seconds).
         // Program ends after 64 seconds.
         final int TOTAL_CYCLES = 4;
 
@@ -192,8 +193,8 @@ public class Eyfel {
      * Runs a segment of the Eyfel Tower animation.
      * 
      * @param colorSet The set of colors to cycle through.
-     * @param frames The number of frames to display.
-     * @param delayMs The delay in milliseconds between frames.
+     * @param frames   The number of frames to display.
+     * @param delayMs  The delay in milliseconds between frames.
      * @return true if skipped, false otherwise
      */
     private static boolean animateTower(String[] colorSet, int frames, int delayMs) {
@@ -227,7 +228,7 @@ public class Eyfel {
      * Starts playing music as a separate OS process.
      * 
      * @param player The command to play the music (e.g., "afplay" or "cmd.exe").
-     * @param path The path to the audio file.
+     * @param path   The path to the audio file.
      */
     private static void startMusic(String player, String path) {
         new Thread(() -> {
@@ -250,7 +251,8 @@ public class Eyfel {
     }
 
     /**
-     * Sets up a Shutdown Hook to stop the music process when the program terminates (Ctrl+C).
+     * Sets up a Shutdown Hook to stop the music process when the program terminates
+     * (Ctrl+C).
      */
     private static void setupShutdownHook() {
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {

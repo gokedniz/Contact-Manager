@@ -97,6 +97,26 @@ public abstract class User {
         return role;
     }
 
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public void setPassword(String passwordHash) {
+        this.passwordHash = passwordHash;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
+    }
+
     // Abstract method to get permissions or menu options could be added here
     /**
      * Displays the menu options available to the user based on their role.

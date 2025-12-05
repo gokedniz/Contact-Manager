@@ -452,7 +452,12 @@ public class ConsoleUI {
      */
     private void handleSearch() {
         helper.printTitle("SEARCH CONTACTS");
-        System.out.println("Select fields (comma separated): 1.First, 2.Last, 3.Phone, 4.Email, 5.All");
+        System.out.println("Select fields (comma separated):");
+        System.out.println("1. First Name");
+        System.out.println("2. Last Name");
+        System.out.println("3. Phone");
+        System.out.println("4. Email");
+        System.out.println("5. All");
 
         List<String> fields = new ArrayList<>();
         while (true) {
@@ -789,7 +794,11 @@ public class ConsoleUI {
         String f = helper.readRequiredString("First Name");
         String l = helper.readRequiredString("Last Name");
 
-        System.out.println("1.Tester 2.Junior 3.Senior");
+        System.out.println("Select Role:");
+        System.out.println("1. Tester");
+        System.out.println("2. Junior Developer");
+        System.out.println("3. Senior Developer");
+
         int r = helper.readInt("Role");
         Role role = (r == 1) ? Role.TESTER : (r == 2) ? Role.JUNIOR_DEVELOPER : Role.SENIOR_DEVELOPER;
 
@@ -850,7 +859,70 @@ public class ConsoleUI {
      * @param user The user to edit.
      */
     private void editUser(User user) {
-        helper.printInfo("Edit User Feature (Logic same as provided code).");
+        helper.printTitle("EDIT USER");
+        helper.printInfo("Press Enter to keep current value.");
+
+        // Username
+        String newUsername = helper.readString("Username [" + user.getUsername() + "]");
+        if (!newUsername.isEmpty()) {
+            // Check existence logic could be added here if needed, but simplistic update:
+            if (!newUsername.equals(user.getUsername()) && authService.isUserExists(newUsername)) {
+                helper.printError("Username already exists. Skipping username update.");
+            } else {
+                user.setUsername(newUsername);
+            }
+        }
+
+        // Password (Optional update)
+        String newPass = helper.readString("New Password (leave blank to keep)");
+        if (!newPass.isEmpty()) {
+            user.setPassword(newPass);
+        }
+
+        // Names
+        String f = helper.readString("First Name [" + user.getFirstName() + "]");
+        if (!f.isEmpty())
+            user.setFirstName(f);
+
+        String l = helper.readString("Last Name [" + user.getLastName() + "]");
+        if (!l.isEmpty())
+            user.setLastName(l);
+
+        // Role
+        System.out.println("Current Role: " + user.getRole());
+        System.out.println("Select New Role (or 0 to keep):");
+        System.out.println("1. Tester");
+        System.out.println("2. Junior Developer");
+        System.out.println("3. Senior Developer");
+        System.out.println("4. Manager"); // Only Manager can assign Manager role conceptually
+
+        int r = helper.readInt("Role Choice");
+        if (r > 0) {
+            Role newRole = user.getRole();
+            switch (r) {
+                case 1:
+                    newRole = Role.TESTER;
+                    break;
+                case 2:
+                    newRole = Role.JUNIOR_DEVELOPER;
+                    break;
+                case 3:
+                    newRole = Role.SENIOR_DEVELOPER;
+                    break;
+                case 4:
+                    newRole = Role.MANAGER;
+                    break;
+                default:
+                    helper.printError("Invalid role choice. Keeping original.");
+            }
+            user.setRole(newRole);
+        }
+
+        if (authService.updateUser(currentUser, user)) {
+            helper.printSuccess("User updated successfully.");
+        } else {
+            helper.printError("Failed to update user.");
+        }
     }
 
     /**
