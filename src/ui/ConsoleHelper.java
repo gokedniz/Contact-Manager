@@ -623,6 +623,9 @@ public class ConsoleHelper {
     }
 
     public static void animateOutro() {
+        // Start music immediately with the credits
+        outro.Eyfel.startMusic();
+
         System.out.println(CYAN);
         try {
             System.out.println("\n\n" + "=".repeat(60));

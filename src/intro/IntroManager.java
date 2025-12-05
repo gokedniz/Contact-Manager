@@ -35,6 +35,12 @@ public class IntroManager {
             // Run Animation
             YeniYilAnimasyon.animate();
 
+            // Clear any buffered input (like 'q' + Enter) to prevent immediate menu
+            // selection
+            while (System.in.available() > 0) {
+                System.in.read();
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
         } finally {

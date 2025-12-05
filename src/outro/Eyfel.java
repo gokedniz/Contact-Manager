@@ -114,29 +114,8 @@ public class Eyfel {
      * Plays the outro animation with music.
      */
     public static void playOutro() {
-        // --- Music Settings ---
-        // Please replace this path with the full path to the MP3 file on your system!
-        final String MP3_PATH;
-
-        // Command for macOS. Change for different OS!
-        final String MUSIC_PLAYER;
-        // -----------------------
-
-        if (System.getProperty("os.name").toLowerCase().contains("win")) {
-            // Windows
-            MP3_PATH = "C:\\je veux kısa.mp3";
-            MUSIC_PLAYER = "cmd.exe";
-        } else {
-            // macOS
-            MP3_PATH = "/Users/gulfemkomurcu/Desktop/jingle bells uzun.mp3";
-            MUSIC_PLAYER = "afplay";
-        }
-        // 1. Start Music Process
-        startMusic(MUSIC_PLAYER, MP3_PATH);
-
-        // 2. Setup Shutdown Hook (Stops music if program is closed with Ctrl+C)
-        setupShutdownHook();
-
+        // Music is now started separately via startMusic() call.
+        
         System.out.println(CLEAR_SCREEN);
         System.out.println("🗼 Animation started. Duration: Approx. 64 seconds (4 full cycles).");
         System.out.println("---");
@@ -225,12 +204,35 @@ public class Eyfel {
     }
 
     /**
-     * Starts playing music as a separate OS process.
-     * 
-     * @param player The command to play the music (e.g., "afplay" or "cmd.exe").
-     * @param path   The path to the audio file.
+     * Starts the outro music sequence.
+     * Accessible publicly to allow earlier start (e.g. during credits).
      */
-    private static void startMusic(String player, String path) {
+    public static void startMusic() {
+        // --- Music Settings ---
+        final String MP3_PATH;
+        final String MUSIC_PLAYER;
+
+        if (System.getProperty("os.name").toLowerCase().contains("win")) {
+            // Windows
+            MP3_PATH = "C:\\je veux kısa.mp3";
+            MUSIC_PLAYER = "cmd.exe";
+        } else {
+            // macOS
+            MP3_PATH = "/Users/gulfemkomurcu/Desktop/jingle bells uzun.mp3";
+            MUSIC_PLAYER = "afplay";
+        }
+
+        // 1. Start Music Process
+        startMusicProcess(MUSIC_PLAYER, MP3_PATH);
+
+        // 2. Setup Shutdown Hook (Stops music if program is closed with Ctrl+C)
+        setupShutdownHook();
+    }
+
+    /**
+     * Internal method to launch the process.
+     */
+    private static void startMusicProcess(String player, String path) {
         new Thread(() -> {
             try {
                 System.out.println("🎵 Music process starting: " + path);
