@@ -9,6 +9,7 @@ import java.sql.Timestamp;
  * <p>Each log entry includes the user ID, username, action type, details, and timestamp.</p>
  * 
  * @author Group 10
+ * @version 1.0
  */
 public class ActivityLog {
     private int logId;

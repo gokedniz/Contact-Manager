@@ -13,6 +13,7 @@ import java.sql.Date;
  * </p>
  * 
  * @author Group 10
+ * @version 1.0
  */
 public class Contact {
     private int id;

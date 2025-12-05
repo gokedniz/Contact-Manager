@@ -9,6 +9,26 @@ import java.util.Locale;
 
 import java.util.List;
 
+/**
+ * Service layer for managing contact operations with role-based access control.
+ * 
+ * <p>This service provides business logic for contact management, including retrieval,
+ * search, sorting, and CRUD operations with permission checks based on user roles.
+ * All modification operations are logged and support undo functionality through
+ * the command pattern. Sorting uses Turkish locale collation for proper Turkish character handling.</p>
+ * 
+ * <p><strong>Permission Model:</strong>
+ * <ul>
+ *   <li>View: All roles can view/search contacts</li>
+ *   <li>Create: Senior Developer and Manager only</li>
+ *   <li>Update: Senior Developer and Manager (full), Junior Developer (names only)</li>
+ *   <li>Delete: Senior Developer and Manager only</li>
+ * </ul>
+ * </p>
+ * 
+ * @author Group 10
+ * @version 1.0
+ */
 public class ContactService {
 
     private ContactDAO contactDAO;
@@ -21,19 +41,61 @@ public class ContactService {
         this.commandManager = command.CommandManager.getInstance();
     }
 
+    /**
+     * Retrieves all contacts from the database.
+     * 
+     * <p>All users can access this method. Returns complete contact list without filtering.</p>
+     * 
+     * @return A list of all contacts. Returns an empty list if no contacts exist.
+     * 
+     * @see ContactDAO#getAllContacts()
+     */
     public List<Contact> getAllContacts() {
         // Everyone can list contacts
         return contactDAO.getAllContacts();
     }
 
+    /**
+     * Searches for contacts using default search fields.
+     * 
+     * <p>Delegates to {@link #searchContacts(String, List)} with null fields parameter
+     * to use default fields (first_name, last_name, phone_primary, email).</p>
+     * 
+     * @param query The search query string. Used for LIKE pattern matching.
+     * @return A list of matching contacts, ordered by name.
+     * 
+     * @see ContactDAO#searchContacts(String)
+     */
     public List<Contact> searchContacts(String query) {
         return contactDAO.searchContacts(query);
     }
 
+    /**
+     * Searches for contacts in specific fields.
+     * 
+     * @param query The search query string. Used for LIKE pattern matching.
+     * @param fields List of field names to search in. If null, uses default fields.
+     * @return A list of matching contacts.
+     * 
+     * @see ContactDAO#searchContacts(String, List)
+     */
     public List<Contact> searchContacts(String query, List<String> fields) {
         return contactDAO.searchContacts(query, fields);
     }
 
+    /**
+     * Retrieves all contacts sorted by specified criteria using Turkish locale collation.
+     * 
+     * <p>Supports sorting by first name, last name, or email in ascending or descending order.
+     * Uses Turkish (tr_TR) locale for proper handling of Turkish characters (ç, ğ, ı, ö, ş, ü).
+     * Default sort is by contact ID ascending if sortBy parameter is unrecognized.</p>
+     * 
+     * @param sortBy Sorting criteria: "name_asc", "name_desc", "surname_asc", "surname_desc",
+     *               "email_asc", "email_desc". Case-insensitive. Defaults to ID sort if unrecognized.
+     * @return A list of all contacts sorted according to the specified criteria.
+     * 
+     * @see #getAllContacts()
+     */
     public List<Contact> getContactsSorted(String sortBy) {
         List<Contact> contacts = contactDAO.getAllContacts();
 
@@ -75,6 +137,20 @@ public class ContactService {
         return contacts;
     }
 
+    /**
+     * Generates statistics about contacts in the database.
+     * 
+     * <p>Returns a map containing:
+     * <ul>
+     *   <li>"Total Contacts": Total number of contacts</li>
+     *   <li>"Contacts with Email": Count of contacts with email addresses</li>
+     *   <li>"Contacts with Phone": Count of contacts with phone numbers</li>
+     *   <li>"Email Domains": Map of email domain frequencies</li>
+     * </ul>
+     * </p>
+     * 
+     * @return A Map containing statistics about contacts.
+     */
     public java.util.Map<String, Object> getStatistics() {
         List<Contact> all = contactDAO.getAllContacts();
         java.util.Map<String, Object> stats = new java.util.HashMap<>();
@@ -101,10 +177,28 @@ public class ContactService {
         return stats;
     }
 
+    /**
+     * Retrieves a contact by its ID.
+     * 
+     * @param id The contact ID.
+     * @return The Contact object if found, or null if not found.
+     * 
+     * @see ContactDAO#getContactById(int)
+     */
     public Contact getContactById(int id) {
         return contactDAO.getContactById(id);
     }
 
+    /**
+     * Adds a new contact (Senior Developer and Manager only).
+     * 
+     * <p>Testers cannot add contacts. Operation is logged and can be undone.
+     * If user lacks permission, message is printed and false is returned.</p>
+     * 
+     * @param user The user performing the action. Used for permission and activity logging.
+     * @param contact The contact to add.
+     * @return true if add succeeds, false if denied or fails.
+     */
     public boolean addContact(User user, Contact contact) {
         if (user.getRole() == Role.TESTER) {
             System.out.println("ACCESS DENIED: Testers cannot add contacts.");
@@ -114,6 +208,21 @@ public class ContactService {
         return true;
     }
 
+    /**
+     * Updates an existing contact with role-based restrictions.
+     * 
+     * <p>Permission restrictions:
+     * <ul>
+     *   <li>Tester: Denied</li>
+     *   <li>Junior Developer: Can only update names (first, middle, last, nickname)</li>
+     *   <li>Senior Developer & Manager: Full update allowed</li>
+     * </ul>
+     * Operation is logged and can be undone.</p>
+     * 
+     * @param user The user performing the update.
+     * @param contact The contact with updated information.
+     * @return true if update succeeds, false if denied or fails.
+     */
     public boolean updateContact(User user, Contact contact) {
         if (user.getRole() == Role.TESTER) {
             System.out.println("ACCESS DENIED: Testers cannot update contacts.");
@@ -144,6 +253,15 @@ public class ContactService {
         return true;
     }
 
+    /**
+     * Deletes a contact (Senior Developer and Manager only).
+     * 
+     * <p>Testers and Junior Developers cannot delete contacts. Operation is logged and can be undone.</p>
+     * 
+     * @param user The user performing the deletion.
+     * @param contactId The ID of the contact to delete.
+     * @return true if deletion succeeds, false if denied or fails.
+     */
     public boolean deleteContact(User user, int contactId) {
         if (user.getRole() == Role.TESTER || user.getRole() == Role.JUNIOR_DEVELOPER) {
             System.out.println("ACCESS DENIED: You do not have permission to delete contacts.");
@@ -154,6 +272,13 @@ public class ContactService {
         return true;
     }
 
+    /**
+     * Undoes the last contact operation.
+     * 
+     * @return true if undo succeeds, false if no operations to undo.
+     * 
+     * @see command.CommandManager#undo()
+     */
     public boolean undoLastAction() {
         return commandManager.undo();
     }

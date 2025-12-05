@@ -7,6 +7,7 @@ package model;
  * <p>Testers have limited access compared to other user roles.</p>
  * 
  * @author Group 10
+ * @version 1.0
  */
 public class Tester extends User {
 

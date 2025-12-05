@@ -4,6 +4,20 @@ import dao.UserDAO;
 import model.User;
 import util.PasswordUtil;
 
+/**
+ * Service layer for user authentication and account management.
+ * 
+ * <p>Handles user login, password management, user registration with role assignment,
+ * and user account updates. Only Manager users can register new users or update existing users.
+ * All authentication operations are logged via ActivityLogDAO.</p>
+ * 
+ * <p><strong>Role-based Registration:</strong>
+ * Supports creating users with different roles: TESTER, JUNIOR_DEVELOPER, SENIOR_DEVELOPER, and MANAGER.
+ * At most one MANAGER role is allowed in the system.</p>
+ * 
+ * @author Group 10
+ * @version 1.0
+ */
 public class AuthenticationService {
 
     private UserDAO userDAO;
@@ -16,6 +30,18 @@ public class AuthenticationService {
         this.commandManager = command.CommandManager.getInstance();
     }
 
+    /**
+     * Authenticates a user with username and password.
+     * 
+     * <p>Verifies credentials and logs a successful login action. Password is hashed
+     * and compared with stored hash.</p>
+     * 
+     * @param username The username to authenticate.
+     * @param password The plain text password.
+     * @return The authenticated User object if credentials are valid, null otherwise.
+     * 
+     * @see PasswordUtil#hashPassword(String)
+     */
     public User login(String username, String password) {
         User user = userDAO.getUserByUsername(username);
 
@@ -29,6 +55,18 @@ public class AuthenticationService {
         return null;
     }
 
+    /**
+     * Changes the password for a user after validating the current password.
+     *
+     * <p>Verifies that the provided old password matches the stored hash and
+     * that the new password is not identical to the old one. The new password
+     * is hashed and updated in the database.</p>
+     *
+     * @param user The user whose password will be changed.
+     * @param oldPassword The current plaintext password for verification.
+     * @param newPassword The new plaintext password to store (will be hashed).
+     * @return Status code: 0 = Success, 1 = Wrong old password, 2 = New same as old, 3 = Database error.
+     */
     public int changePassword(User user, String oldPassword, String newPassword) {
         String oldHash = PasswordUtil.hashPassword(oldPassword);
         if (!oldHash.equals(user.getPasswordHash())) {
@@ -44,10 +82,32 @@ public class AuthenticationService {
         return success ? 0 : 3; // 0=Success, 3=DB Error
     }
 
+    /**
+     * Checks if a user with the given username exists.
+     * 
+     * @param username The username to check.
+     * @return true if user exists, false otherwise.
+     */
     public boolean isUserExists(String username) {
         return userDAO.getUserByUsername(username) != null;
     }
 
+    /**
+     * Registers a new user with the specified role and credentials.
+     * 
+     * <p>Only one MANAGER role is allowed. If attempting to register a MANAGER
+     * when one already exists, registration fails. Username must be unique.
+     * Password is hashed before storage.</p>
+     * 
+     * @param currentUser The user performing the registration (typically Manager).
+     * @param username The new username (must be unique).
+     * @param password The plain text password.
+     * @param firstName User's first name.
+     * @param lastName User's last name.
+     * @param role The user role to assign (TESTER, JUNIOR_DEVELOPER, SENIOR_DEVELOPER, MANAGER).
+     * 
+     * @return true if registration succeeds, false if username exists or manager limit exceeded.
+     */
     public boolean registerUser(User currentUser, String username, String password, String firstName, String lastName,
             model.Role role) {
         if (isUserExists(username)) {
@@ -90,10 +150,25 @@ public class AuthenticationService {
         return true;
     }
 
+    /**
+     * Retrieves all users from the database.
+     * 
+     * @return A list of all User objects.
+     */
     public java.util.List<User> getAllUsers() {
         return userDAO.getAllUsers();
     }
 
+    /**
+     * Updates user information with manager role promotion restrictions.
+     * 
+     * <p>Prevents promoting a user to MANAGER if another user is already a manager.
+     * Allows updating the existing manager's information without promotion check.</p>
+     * 
+     * @param currentUser The user performing the update.
+     * @param userToUpdate The user to update with new information.
+     * @return true if update succeeds, false if manager limit would be exceeded.
+     */
     public boolean updateUser(User currentUser, User userToUpdate) {
         // Check if trying to promote to MANAGER
         if (userToUpdate.getRole() == model.Role.MANAGER) {
@@ -158,12 +233,26 @@ public class AuthenticationService {
         return false;
     }
 
+    /**
+     * Deletes a user from the system.
+     * 
+     * <p>Operation is logged and can be undone via the command pattern.</p>
+     * 
+     * @param currentUser The user performing the deletion.
+     * @param userId The ID of the user to delete.
+     * @return true if deletion succeeds.
+     */
     public boolean deleteUser(User currentUser, int userId) {
         commandManager.executeCommand(
                 new command.DeleteUserCommand(userDAO, activityLogDAO, userId, currentUser.getId()));
         return true;
     }
 
+    /**
+     * Undoes the last user-related operation (registration, update, or deletion).
+     * 
+     * @see command.CommandManager#undo()
+     */
     public void undoLastAction() {
         commandManager.undo();
     }
