@@ -4,6 +4,8 @@ import dao.ContactDAO;
 import model.Contact;
 import model.Role;
 import model.User;
+import java.text.Collator;
+import java.util.Locale;
 
 import java.util.List;
 
@@ -34,31 +36,36 @@ public class ContactService {
 
     public List<Contact> getContactsSorted(String sortBy) {
         List<Contact> contacts = contactDAO.getAllContacts();
+
+        Collator trCollator = Collator.getInstance(new Locale("tr", "TR"));
+        trCollator.setStrength(Collator.PRIMARY);
+
         switch (sortBy.toLowerCase()) {
             case "name_asc":
-                contacts.sort((c1, c2) -> c1.getFirstName().compareToIgnoreCase(c2.getFirstName()));
+                // compareToIgnoreCase YERİNE trCollator.compare kullanıyoruz
+                contacts.sort((c1, c2) -> trCollator.compare(c1.getFirstName(), c2.getFirstName()));
                 break;
             case "name_desc":
-                contacts.sort((c1, c2) -> c2.getFirstName().compareToIgnoreCase(c1.getFirstName()));
+                contacts.sort((c1, c2) -> trCollator.compare(c2.getFirstName(), c1.getFirstName()));
                 break;
             case "surname_asc":
-                contacts.sort((c1, c2) -> c1.getLastName().compareToIgnoreCase(c2.getLastName()));
+                contacts.sort((c1, c2) -> trCollator.compare(c1.getLastName(), c2.getLastName()));
                 break;
             case "surname_desc":
-                contacts.sort((c1, c2) -> c2.getLastName().compareToIgnoreCase(c1.getLastName()));
+                contacts.sort((c1, c2) -> trCollator.compare(c2.getLastName(), c1.getLastName()));
                 break;
             case "email_asc":
                 contacts.sort((c1, c2) -> {
                     String e1 = c1.getEmail() == null ? "" : c1.getEmail();
                     String e2 = c2.getEmail() == null ? "" : c2.getEmail();
-                    return e1.compareToIgnoreCase(e2);
+                    return trCollator.compare(e1, e2);
                 });
                 break;
             case "email_desc":
                 contacts.sort((c1, c2) -> {
                     String e1 = c1.getEmail() == null ? "" : c1.getEmail();
                     String e2 = c2.getEmail() == null ? "" : c2.getEmail();
-                    return e2.compareToIgnoreCase(e1);
+                    return trCollator.compare(e2, e1);
                 });
                 break;
             default:
