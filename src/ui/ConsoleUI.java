@@ -196,7 +196,6 @@ public class ConsoleUI {
                 break;
             case 6:
                 showStatistics();
-                // Statistics kendi içinde bekliyor
                 break;
             case 7:
                 if (hasPermission(Role.JUNIOR_DEVELOPER)) {
@@ -233,7 +232,6 @@ public class ConsoleUI {
         }
     }
 
-    // --- BURADA DEĞİŞİKLİK YAPILDI ---
     private void showStatistics() {
         if (!hasPermission(Role.MANAGER)) {
             helper.printError("Access Denied.");
@@ -243,11 +241,8 @@ public class ConsoleUI {
 
         helper.printTitle("SYSTEM STATISTICS & INSIGHTS");
         
-        // Verileri Service'ten çekiyoruz
         List<Contact> allContacts = contactService.getAllContacts();
         
-        // --- GRAFİK 1: OPTIONAL FIELD SATURATION (İSTEĞİN ÜZERİNE) ---
-        // Hangi alanın kaç kişide dolu olduğunu sayıyoruz
         Map<String, Integer> optionalStats = new HashMap<>();
         int middleNameCount = 0;
         int nicknameCount = 0;
@@ -274,12 +269,7 @@ public class ConsoleUI {
 
         helper.printAnimatedHorizontalBarChart("OPTIONAL FIELDS COMPLETENESS", optionalStats);
 
-
-        // --- GRAFİK 2: ALPHABETICAL DISTRIBUTION (ÖNERİM) ---
-        // İsimlerin baş harflerine göre dağılım
         Map<String, Integer> alphaStats = new HashMap<>();
-        // Bucketları sıfırla başlat ki boş olsa bile grafikte 0 olarak görünsün (Tercihen)
-        // Ya da sadece olanları ekle. Biz dinamik yapalım.
         
         for (Contact c : allContacts) {
             String name = c.getFirstName().toUpperCase();
@@ -298,8 +288,6 @@ public class ConsoleUI {
         
         helper.printAnimatedHorizontalBarChart("CONTACT NAME DISTRIBUTION (A-Z)", alphaStats);
 
-
-        // --- GRAFİK 3: EMAIL DOMAIN DISTRIBUTION (MEVCUT OLANI GRAFİĞE ÇEVİRDİK) ---
         Map<String, Integer> domainStats = new HashMap<>();
         for (Contact c : allContacts) {
             if (c.getEmail() != null && c.getEmail().contains("@")) {
@@ -312,7 +300,6 @@ public class ConsoleUI {
 
         helper.pressEnterToContinue();
     }
-    // ---------------------------------
 
     private void listContacts() {
         helper.printTitle("ALL CONTACTS");
@@ -538,8 +525,6 @@ public class ConsoleUI {
             return;
         }
         helper.printTitle("Activity Logs");
-        // ... (Log filter logic kept same but shortened for brevity here if needed, 
-        // but fully implemented in logic above)
         String usernameFilter = helper.readString("Filter User (Enter for All)");
         String actionFilter = helper.readString("Filter Action (LOGIN, ADD...)");
         String sortOrder = helper.readString("Newest First? (Y/N)").equalsIgnoreCase("N") ? "ASC" : "DESC";
@@ -594,9 +579,6 @@ public class ConsoleUI {
     }
     
     private void editUser(User user) {
-        // ... (Existing implementation kept same)
-        // Kısaltmak için burayı tam yazmadım ama orijinal kodun aynısı kalabilir.
-        // Logic değişmedi.
         helper.printInfo("Edit User Feature (Logic same as provided code).");
     }
 

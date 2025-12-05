@@ -271,7 +271,7 @@ public class ConsoleHelper {
             for (int i = 0; i < barLength; i++) {
                 System.out.print("█");
                 try {
-                    Thread.sleep(10); // Animasyon hızı (ms)
+                    Thread.sleep(20); // Animasyon hızı (ms)
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
                 }
