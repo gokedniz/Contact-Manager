@@ -250,6 +250,22 @@ public class ConsoleHelper {
         }
     }
 
+    public String readGender(String prompt) {
+        while (true) {
+            String input = readString(prompt + " (K/E)");
+            if (input.isEmpty()) {
+                return null;
+            }
+            if (input.equalsIgnoreCase("K")) {
+                return "K";
+            }
+            if (input.equalsIgnoreCase("E")) {
+                return "E";
+            }
+            printError("Invalid gender. Please enter 'K' or 'E'.");
+        }
+    }
+
     // --- GRAFİK ÇİZİCİ
     public void printHorizontalBarChart(String title, java.util.Map<String, Integer> data) {
         if (data.isEmpty()) {

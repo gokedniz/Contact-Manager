@@ -25,6 +25,7 @@ public class Contact {
     private String email;
     private String linkedinUrl;
     private Date birthDate;
+    private String gender;
 
     /**
      * Constructor to initialize all fields of the Contact class.
@@ -39,9 +40,11 @@ public class Contact {
      * @param email          The email address of the contact.
      * @param linkedinUrl    The LinkedIn URL of the contact.
      * @param birthDate      The birth date of the contact.
+     * @param gender         The gender of the contact (K/E).
      */
     public Contact(int id, String firstName, String middleName, String lastName, String nickname,
-            String phonePrimary, String phoneSecondary, String email, String linkedinUrl, Date birthDate) {
+            String phonePrimary, String phoneSecondary, String email, String linkedinUrl, Date birthDate,
+            String gender) {
         this.id = id;
         this.firstName = firstName;
         this.middleName = middleName;
@@ -52,6 +55,7 @@ public class Contact {
         this.email = email;
         this.linkedinUrl = linkedinUrl;
         this.birthDate = birthDate;
+        this.gender = gender;
     }
 
     /**
@@ -66,10 +70,13 @@ public class Contact {
      * @param email          The email address of the contact.
      * @param linkedinUrl    The LinkedIn URL of the contact.
      * @param birthDate      The birth date of the contact.
+     * @param gender         The gender of the contact (K/E).
      */
     public Contact(String firstName, String middleName, String lastName, String nickname,
-            String phonePrimary, String phoneSecondary, String email, String linkedinUrl, Date birthDate) {
-        this(0, firstName, middleName, lastName, nickname, phonePrimary, phoneSecondary, email, linkedinUrl, birthDate);
+            String phonePrimary, String phoneSecondary, String email, String linkedinUrl, Date birthDate,
+            String gender) {
+        this(0, firstName, middleName, lastName, nickname, phonePrimary, phoneSecondary, email, linkedinUrl, birthDate,
+                gender);
     }
 
     // Getters and Setters
@@ -251,6 +258,24 @@ public class Contact {
      */
     public void setBirthDate(Date birthDate) {
         this.birthDate = birthDate;
+    }
+
+    /**
+     * Gets the gender of the contact.
+     * 
+     * @return The gender (K/E).
+     */
+    public String getGender() {
+        return gender;
+    }
+
+    /**
+     * Sets the gender of the contact.
+     * 
+     * @param gender The gender (K/E).
+     */
+    public void setGender(String gender) {
+        this.gender = gender;
     }
 
     /**

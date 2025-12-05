@@ -551,6 +551,7 @@ public class ConsoleUI {
         String email = helper.readEmail("Email (Optional)", false);
         String linkedin = helper.readString("LinkedIn (Optional)");
         Date birth = helper.readDate("Birth Date (Optional)");
+        String gender = helper.readGender("Gender (Optional)");
 
         // Tüm verileri tek seferde Constructor'a gönderiyoruz.
         // Boş girilen (Optional) alanlar için veritabanına 'null' gönderiyoruz.
@@ -563,7 +564,8 @@ public class ConsoleUI {
                 phone2, // readPhone returns null if optional and empty
                 email, // readEmail returns null if optional and empty
                 linkedin.isEmpty() ? null : linkedin,
-                birth);
+                birth,
+                gender);
 
         if (contactService.addContact(currentUser, contact)) {
             helper.printSuccess("Contact added successfully.");

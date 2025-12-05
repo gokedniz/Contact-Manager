@@ -10,7 +10,7 @@ import java.util.List;
 public class ContactDAO {
 
     public int addContact(Contact contact) {
-        String query = "INSERT INTO contacts (first_name, middle_name, last_name, nickname, phone_primary, phone_secondary, email, linkedin_url, birth_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String query = "INSERT INTO contacts (first_name, middle_name, last_name, nickname, phone_primary, phone_secondary, email, linkedin_url, birth_date, gender) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (Connection conn = DatabaseConnection.getInstance().getConnection();
                 PreparedStatement stmt = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
 
@@ -62,12 +62,12 @@ public class ContactDAO {
     }
 
     public void updateContact(Contact contact) {
-        String query = "UPDATE contacts SET first_name=?, middle_name=?, last_name=?, nickname=?, phone_primary=?, phone_secondary=?, email=?, linkedin_url=?, birth_date=? WHERE contact_id=?";
+        String query = "UPDATE contacts SET first_name=?, middle_name=?, last_name=?, nickname=?, phone_primary=?, phone_secondary=?, email=?, linkedin_url=?, birth_date=?, gender=? WHERE contact_id=?";
         try (Connection conn = DatabaseConnection.getInstance().getConnection();
                 PreparedStatement stmt = conn.prepareStatement(query)) {
 
             setContactStatement(stmt, contact);
-            stmt.setInt(10, contact.getId());
+            stmt.setInt(11, contact.getId());
             stmt.executeUpdate();
             System.out.println("Contact updated successfully.");
         } catch (SQLException e) {
@@ -140,6 +140,7 @@ public class ContactDAO {
         stmt.setString(7, contact.getEmail());
         stmt.setString(8, contact.getLinkedinUrl());
         stmt.setDate(9, contact.getBirthDate());
+        stmt.setString(10, contact.getGender());
     }
 
     private Contact mapResultSetToContact(ResultSet rs) throws SQLException {
@@ -153,6 +154,7 @@ public class ContactDAO {
                 rs.getString("phone_secondary"),
                 rs.getString("email"),
                 rs.getString("linkedin_url"),
-                rs.getDate("birth_date"));
+                rs.getDate("birth_date"),
+                rs.getString("gender"));
     }
 }
