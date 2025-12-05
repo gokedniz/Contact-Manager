@@ -347,7 +347,8 @@ public class ConsoleUI {
 
         List<Contact> contacts = contactService.getContactsSorted(sortBy);
         List<String[]> tableData = convertContactsToTableData(contacts);
-        String[] headers = { "ID", "Full Name", "Phone", "Email", "Nickname" };
+        String[] headers = { "ID", "First Name", "Middle Name", "Last Name", "Nickname", "Primary Phone", "Sec. Phone",
+                "Email", "LinkedIn", "Birth Date", "Gender" };
 
         helper.printTable(headers, tableData);
         interactWithResults(contacts);
@@ -400,7 +401,8 @@ public class ConsoleUI {
             helper.pressEnterToContinue();
         } else {
             helper.printSuccess("Found " + results.size() + " matches:");
-            String[] headers = { "ID", "Full Name", "Phone", "Email", "Nickname" };
+            String[] headers = { "ID", "First Name", "Middle Name", "Last Name", "Nickname", "Primary Phone",
+                    "Sec. Phone", "Email", "LinkedIn", "Birth Date", "Gender" };
             helper.printTable(headers, convertContactsToTableData(results));
             interactWithResults(results);
         }
@@ -411,10 +413,16 @@ public class ConsoleUI {
         for (Contact c : contacts) {
             data.add(new String[] {
                     String.valueOf(c.getId()),
-                    c.getFirstName() + " " + c.getLastName(),
+                    c.getFirstName(),
+                    c.getMiddleName() != null ? c.getMiddleName() : "",
+                    c.getLastName(),
+                    c.getNickname() != null ? c.getNickname() : "",
                     c.getPhonePrimary(),
+                    c.getPhoneSecondary() != null ? c.getPhoneSecondary() : "",
                     c.getEmail() != null ? c.getEmail() : "",
-                    c.getNickname() != null ? c.getNickname() : ""
+                    c.getLinkedinUrl() != null ? c.getLinkedinUrl() : "",
+                    c.getBirthDate() != null ? c.getBirthDate().toString() : "",
+                    c.getGender() != null ? c.getGender() : ""
             });
         }
         return data;
@@ -438,7 +446,8 @@ public class ConsoleUI {
             helper.clearScreen();
             helper.printSectionHeader("SELECTED: " + selected.getFirstName().toUpperCase());
             List<String[]> singleData = convertContactsToTableData(List.of(selected));
-            helper.printTable(new String[] { "ID", "Full Name", "Phone", "Email", "Nick" }, singleData);
+            helper.printTable(new String[] { "ID", "First Name", "Middle Name", "Last Name", "Nickname",
+                    "Primary Phone", "Sec. Phone", "Email", "LinkedIn", "Birth Date", "Gender" }, singleData);
 
             helper.printMenuHeader("ACTIONS");
             helper.printMenuOption(1, "Edit Contact");
