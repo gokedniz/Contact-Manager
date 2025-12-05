@@ -11,8 +11,31 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Data Access Object (DAO) for managing ActivityLog records in the database.
+ * 
+ * <p>This class handles logging of user actions and system events. It provides methods to
+ * record both user-specific actions and system-level actions, retrieve activity logs with
+ * optional filtering and sorting, and delete activity logs for specific users.</p>
+ * 
+ * @author Project2-Group10
+ * @version 1.0
+ * @since 1.0
+ */
 public class ActivityLogDAO {
 
+    /**
+     * Logs a user action to the activity_logs table.
+     * 
+     * <p>Records an action performed by a specific user, including the action type and
+     * relevant details. The timestamp is automatically set by the database.</p>
+     * 
+     * @param userId The ID of the user performing the action.
+     * @param actionType The type of action performed (e.g., "LOGIN", "CREATE_CONTACT", "DELETE_USER").
+     * @param details Additional details about the action.
+     * 
+     * @throws SQLException is caught internally; errors are logged via printStackTrace and System.err.
+     */
     public void logAction(int userId, String actionType, String details) {
         String query = "INSERT INTO activity_logs (user_id, action_type, details) VALUES (?, ?, ?)";
         try (Connection conn = DatabaseConnection.getInstance().getConnection();
@@ -29,7 +52,17 @@ public class ActivityLogDAO {
         }
     }
 
-    // Overload for system actions or when user ID is not available/relevant
+    /**
+     * Logs a system action to the activity_logs table without a specific user.
+     * 
+     * <p>Records system-level actions or actions when a user ID is not available.
+     * The user_id field will be NULL in the database.</p>
+     * 
+     * @param actionType The type of action (e.g., "SYSTEM_STARTUP", "DATABASE_ERROR").
+     * @param details Additional details about the action.
+     * 
+     * @throws SQLException is caught internally; errors are logged via printStackTrace and System.err.
+     */
     public void logAction(String actionType, String details) {
         String query = "INSERT INTO activity_logs (action_type, details) VALUES (?, ?)";
         try (Connection conn = DatabaseConnection.getInstance().getConnection();
@@ -45,6 +78,23 @@ public class ActivityLogDAO {
         }
     }
 
+
+    /**
+     * Retrieves activity logs with optional filtering and sorting.
+     * 
+     * <p>Builds a dynamic query to fetch logs with optional filters for username and action type.
+     * Results are joined with the users table to include usernames; system logs show "Unknown/System"
+     * for NULL user_ids.</p>
+     * 
+     * @param usernameFilter Optional filter for username (LIKE pattern matching). Pass null or empty string to skip.
+     * @param actionFilter Optional filter for action type (LIKE pattern matching). Pass null or empty string to skip.
+     * @param sortOrder Sort direction for log_id: "ASC" for ascending, defaults to "DESC" for descending.
+     * 
+     * @return A list of ActivityLog objects matching the filters, ordered as specified.
+     *         Returns an empty list if no logs match or if an error occurs.
+     * 
+     * @throws SQLException is caught internally; errors are logged via printStackTrace.
+     */
     public List<ActivityLog> getAllLogs(String usernameFilter, String actionFilter, String sortOrder) {
         List<ActivityLog> logs = new ArrayList<>();
         StringBuilder queryBuilder = new StringBuilder(
@@ -97,6 +147,18 @@ public class ActivityLogDAO {
         return logs;
     }
 
+    
+
+    /**
+     * Deletes all activity logs for a specific user.
+     * 
+     * <p>Removes all records in activity_logs where user_id matches the provided ID.
+     * This is typically called when a user account is deleted.</p>
+     * 
+     * @param userId The ID of the user whose logs should be deleted.
+     * 
+     * @throws SQLException is caught internally; errors are logged via printStackTrace and System.err.
+     */
     public void deleteLogsByUserId(int userId) {
         String query = "DELETE FROM activity_logs WHERE user_id = ?";
         try (Connection conn = DatabaseConnection.getInstance().getConnection();
