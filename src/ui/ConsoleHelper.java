@@ -175,8 +175,10 @@ public class ConsoleHelper {
             if (input.isEmpty())
                 return null;
             try {
-                // Parse using d-M-yyyy pattern which handles both 05-12-2025 and 5-12-2025
-                java.time.format.DateTimeFormatter formatter = java.time.format.DateTimeFormatter.ofPattern("d-M-yyyy");
+                // Parse using d-M-uuuu pattern which handles both 05-12-2025 and 5-12-2025
+                // We use 'uuuu' for year in STRICT mode instead of 'yyyy'
+                java.time.format.DateTimeFormatter formatter = java.time.format.DateTimeFormatter.ofPattern("d-M-uuuu")
+                        .withResolverStyle(java.time.format.ResolverStyle.STRICT);
                 java.time.LocalDate localDate = java.time.LocalDate.parse(input, formatter);
 
                 if (localDate.isAfter(java.time.LocalDate.now())) {
@@ -212,6 +214,13 @@ public class ConsoleHelper {
                 printError("Email is required.");
                 continue;
             }
+
+            // Check for spaces
+            if (input.contains(" ")) {
+                printError("Email cannot contain spaces.");
+                continue;
+            }
+
             // More realistic email regex:
             // - Local part: allows alphanumeric, dots, underscores, plus, hyphens
             // - @ symbol
