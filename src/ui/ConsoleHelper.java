@@ -24,7 +24,6 @@ public class ConsoleHelper {
 
     // --- EKRAN KONTROLÜ ---
     public void clearScreen() {
-        // Basit boşluk bırakma yöntemi (IDE konsolları için en güvenlisi)
         System.out.print("\n".repeat(50));
     }
 
@@ -33,7 +32,7 @@ public class ConsoleHelper {
         scanner.nextLine();
     }
 
-    // --- SANATSAL LOGO ---
+    // --- SANATSAL LOGO (CONTACT MANAGER) ---
     public void printAsciiArt() {
         System.out.println(CYAN + BOLD);
         System.out.println("   ______            __             __     __  ___                                   ");
@@ -46,7 +45,7 @@ public class ConsoleHelper {
         System.out.println(RESET);
     }
 
-    // --- BAŞLIKLAR VE MESAJLAR ---
+    // --- KUTULU BAŞLIKLAR VE MESAJLAR ---
     public void printTitle(String title) {
         String border = "═".repeat(title.length() + 6);
         System.out.println(CYAN + "\n╔" + border + "╗");
@@ -94,7 +93,7 @@ public class ConsoleHelper {
         System.out.println(PURPLE + "└" + "─".repeat(50) + "┘" + RESET);
     }
 
-    // --- TABLO OLUŞTURUCU ---
+    // --- DİNAMİK TABLO OLUŞTURUCU ---
     public void printTable(String[] headers, List<String[]> data) {
         if (data.isEmpty()) {
             printInfo("No data available to display.");
@@ -181,13 +180,17 @@ public class ConsoleHelper {
                 java.time.format.DateTimeFormatter formatter = java.time.format.DateTimeFormatter.ofPattern("d-M-uuuu")
                         .withResolverStyle(java.time.format.ResolverStyle.STRICT);
                 java.time.LocalDate localDate = java.time.LocalDate.parse(input, formatter);
+
                 if (localDate.isAfter(java.time.LocalDate.now())) {
                     printError("Date cannot be in the future.");
                     continue;
                 }
+
                 return Date.valueOf(localDate);
-            } catch (Exception e) {
-                printError("Invalid date. Use DD-MM-YYYY.");
+            } catch (java.time.format.DateTimeParseException e) {
+                printError("Invalid date. Use DD-MM-YYYY (e.g., 05-12-2025 or 5-12-2025).");
+            } catch (IllegalArgumentException e) {
+                printError("Invalid date format.");
             }
         }
     }
@@ -238,10 +241,11 @@ public class ConsoleHelper {
                 printError("Phone number is required.");
                 continue;
             }
+            // Regex: Optional +, digits, spaces, dashes. Min 7 chars.
             if (input.matches("^[+]?[0-9\\s\\-]{7,20}$")) {
                 return input;
             }
-            printError("Invalid phone number format.");
+            printError("Invalid phone number format. Use digits, spaces, or dashes.");
         }
     }
 
@@ -264,70 +268,38 @@ public class ConsoleHelper {
     // --- GRAFİK ÇİZİCİ
     public void printAnimatedHorizontalBarChart(String title, java.util.Map<String, Integer> data) {
         if (data.isEmpty()) {
-            printInfo("No data to visualize for: " + title);
+            printInfo("No data to visualize.");
             return;
         }
 
-        // Toplam değeri hesapla (Yüzde hesabı için)
-        // Eğer veri tipi dağılım değilse (örn: toplam sayı sayma) en büyük değere göre
-        // scale edebiliriz.
-        // Ancak burada yüzde gösterimi için toplamı alıyoruz.
         int total = data.values().stream().mapToInt(Integer::intValue).sum();
-
-        // Eğer total 0 ise (örn: tüm değerler 0) hata vermemesi için 1 yapalım
-        if (total == 0)
-            total = 1;
-
-        // En uzun etiketi bul (Hizalama için)
         int maxKeyLength = data.keySet().stream().mapToInt(String::length).max().orElse(10);
 
         printSectionHeader(title);
 
-        // Datayı value'ya göre sort edelim (Büyükten küçüğe şık durur)
         java.util.List<java.util.Map.Entry<String, Integer>> sortedList = new java.util.ArrayList<>(data.entrySet());
         sortedList.sort((a, b) -> b.getValue().compareTo(a.getValue()));
 
-        String[] colors = { CYAN, GREEN, YELLOW, PURPLE, BLUE, RED };
+        String[] colors = { CYAN, GREEN, YELLOW, PURPLE, BLUE };
         int colorIdx = 0;
 
         for (java.util.Map.Entry<String, Integer> entry : sortedList) {
             String label = entry.getKey();
             int value = entry.getValue();
 
-            // Yüzde hesabı
-            double percentage = ((double) value / total) * 100;
+            double percentage = (total > 0) ? ((double) value / total) * 100 : 0;
 
-            // Çubuk uzunluğu (Maksimum 40 karakter)
-            // Ancak "Opsiyonel Alanlar" grafiğinde total mantığı biraz farklı işleyebilir
-            // (Çünkü her kişi her alana sahip olabilir).
-            // Yine de görsel tutarlılık için bu formül iş görür.
             int barLength = (int) ((percentage * 40) / 100);
-
-            // Eğer değer var ama bar hesaplamada 0 çıkıyorsa en az 1 karakter göster
             if (barLength == 0 && value > 0)
                 barLength = 1;
 
+            String bar = "█".repeat(barLength);
             String color = colors[colorIdx % colors.length];
 
-            // 1. Etiketi yazdır
-            System.out.printf(WHITE + "%" + maxKeyLength + "s " + YELLOW + "│ " + color, label);
-
-            // 2. Bar'ı animasyonlu yazdır (Karakter karakter)
-            for (int i = 0; i < barLength; i++) {
-                System.out.print("█");
-                try {
-                    Thread.sleep(10); // Animasyon hızı (ms)
-                } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
-                }
-            }
-
-            // 3. Boşlukları tamamla (Hizalama için opsiyonel, ama temiz durur)
-            int remainingSpace = 40 - barLength;
-            System.out.print(" ".repeat(remainingSpace));
-
-            // 4. Değeri ve yüzdeyi yazdır
-            System.out.printf(WHITE + " %d (%%%.1f)%n" + RESET, value, percentage);
+            System.out.printf(
+                    WHITE + "%" + maxKeyLength + "s " + YELLOW + "│ " + color + "%-40s " + WHITE + "%d (%%%.1f)%n"
+                            + RESET,
+                    label, bar, value, percentage);
 
             colorIdx++;
         }
