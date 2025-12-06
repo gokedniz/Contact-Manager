@@ -5,7 +5,7 @@ package intro;
  * 
  * <p>
  * Handles the playback of the intro music and triggers the visual animation
- * implemented in {@link YeniYilAnimasyon}. Dynamically selects logic based on
+ * implemented in {@link NewYearAnimation}. Dynamically selects logic based on
  * the operating system (Windows vs MacOS).
  * </p>
  * 
