@@ -214,11 +214,11 @@ public class Eyfel {
 
         if (System.getProperty("os.name").toLowerCase().contains("win")) {
             // Windows
-            MP3_PATH = "C:\\je veux kısa.mp3";
+            MP3_PATH = "C:\\user.mp3";
             MUSIC_PLAYER = "cmd.exe";
         } else {
             // macOS
-            MP3_PATH = "/Users/gulfemkomurcu/Desktop/jingle bells uzun.mp3";
+            MP3_PATH = "/Users/gulfemkomurcu/Desktop/outro.mp3";
             MUSIC_PLAYER = "afplay";
         }
 
