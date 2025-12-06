@@ -33,11 +33,11 @@ public class IntroManager {
 
         if (System.getProperty("os.name").toLowerCase().contains("win")) {
             // Windows
-            MP3_PATH = "C:\\jingle bells uzun.mp3";
+            MP3_PATH = "C:\\intro.mp3";
             MUSIC_PLAYER = "cmd.exe";
         } else {
             // macOS
-            MP3_PATH = "/Users/gulfemkomurcu/Desktop/jingle bells uzun.mp3";
+            MP3_PATH = "/Users/gulfemkomurcu/Desktop/intro.mp3";
             MUSIC_PLAYER = "afplay";
         }
 
