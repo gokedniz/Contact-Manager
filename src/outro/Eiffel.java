@@ -5,39 +5,71 @@ import java.lang.Process;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Handles the "Eyfel Tower" animation sequence (Outro).
+ * Utility class for managing the Eyfel Tower outro animation and music.
+ * 
+ * <p>Provides methods to play a colorful ASCII art animation of the Eyfel Tower
+ * accompanied by background music. Supports skipping the animation via user input.
+ * </p>
+ * 
+ * <p>The animation cycles through various color themes including original,
+ * Galatasaray, New Year, and Red-White themes.</p>
+ * 
+ * @author Group 10
+ * @version 1.0
  */
-public class Eyfel {
-
+public class Eiffel {
+    /** Resets the console color to default. */
     public static final String ANSI_RESET = "\u001B[0m";
 
-    // Original Eyfel tones
+    /** White color code used for fireworks animation. */
     public static final String FW_WHITE = "\u001B[97m";
+    
+    /** Yellow color code used for fireworks animation. */
     public static final String FW_YELLOW = "\u001B[93m";
+    
+    /** Orange color code used for fireworks animation. */
     public static final String FW_ORANGE = "\u001B[38;5;208m";
+    
+    /** Red color code used for fireworks animation. */
     public static final String FW_RED = "\u001B[31m";
+    
+    /** Purple color code used for fireworks animation. */
     public static final String FW_PURPLE = "\u001B[35m";
 
-    // Galatasaray colors
+    /** Yellow color code used for the Galatasaray (GS) theme elements. */
     public static final String GS_YELLOW = "\u001B[93m";
+    
+    /** Red color code used for the Galatasaray (GS) theme elements. */
     public static final String GS_RED = "\u001B[31m";
 
-    // Blue, Red, White
+    /** Blue color code for the new year theme. */
     public static final String NEW_BLUE = "\u001B[34m";
+    
+    /** Red color code for the new year theme. */
     public static final String NEW_RED = "\u001B[31m";
+    
+    /** White color code for the new year theme. */
     public static final String NEW_WHITE = "\u001B[97m";
 
-    // New Red-White colors
-    public static final String RW_RED = "\u001B[31m"; // Red
-    public static final String RW_WHITE = "\u001B[97m"; // White
+    /** Red color code for red/white theme elements. */
+    public static final String RW_RED = "\u001B[31m";
+    
+    /** White color code for red/white theme elements. */
+    public static final String RW_WHITE = "\u001B[97m";
 
+    /** ANSI sequence to clear the screen and move cursor to top-left. */
     public static final String CLEAR_SCREEN = "\u001B[2J\u001B[H";
-    private static final String PADDING = "                    "; // Right padding
+    
+    /** Padding string used for centering the ASCII art. */
+    private static final String PADDING = "                    "; 
 
-    // Static variable to store music process
+    /** Static variable to manage the background music process. */
     private static Process musicProcess;
 
-    // --- EYFEL TOWER DRAWING ---
+    
+    /**
+     * Eyfel Tower ASCII Art Lines
+     */
     private static final String[] TOWER_LINES = {
             PADDING + "                $$ ",
             PADDING + "                $$",
@@ -213,7 +245,7 @@ public class Eyfel {
 
         if (System.getProperty("os.name").toLowerCase().contains("win")) {
             // Windows
-            MP3_PATH = "C:\\user.mp3";
+            MP3_PATH = "C:\\outro.mp3";
             MUSIC_PLAYER = "cmd.exe";
         } else {
             // macOS

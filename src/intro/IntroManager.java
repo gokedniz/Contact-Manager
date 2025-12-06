@@ -5,7 +5,7 @@ package intro;
  * 
  * <p>
  * Handles the playback of the intro music and triggers the visual animation
- * implemented in {@link YeniYilAnimasyon}. Dynamically selects logic based on
+ * implemented in {@link NewYearAnimation}. Dynamically selects logic based on
  * the operating system (Windows vs MacOS).
  * </p>
  * 
@@ -33,7 +33,7 @@ public class IntroManager {
 
         if (System.getProperty("os.name").toLowerCase().contains("win")) {
             // Windows
-            MP3_PATH = "C:\\jingle bells uzun.mp3";
+            MP3_PATH = "C:\\intro.mp3";
             MUSIC_PLAYER = "cmd.exe";
         } else {
             // macOS
@@ -55,7 +55,7 @@ public class IntroManager {
             new ProcessBuilder(musicCommand).inheritIO().start();
 
             // Run Animation
-            YeniYilAnimasyon.animate();
+            NewYearAnimation.animate();
 
             // Clear any buffered input (like 'q' + Enter) to prevent immediate menu
             // selection

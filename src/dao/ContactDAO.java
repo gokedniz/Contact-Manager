@@ -33,7 +33,6 @@ import java.util.List;
  *   <li>linkedin_url</li>
  *   <li>birth_date</li>
  * </ul>
- * </p>
  * 
  * @author Group 10
  * @version 1.0

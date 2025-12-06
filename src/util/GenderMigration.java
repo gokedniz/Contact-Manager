@@ -14,6 +14,10 @@ import java.util.List;
  */
 public class GenderMigration {
 
+    /**
+     * Main method to execute the gender migration. 
+     * @param args 
+     */
     public static void main(String[] args) {
         System.out.println("Starting Gender Migration...");
         ContactDAO dao = new ContactDAO();

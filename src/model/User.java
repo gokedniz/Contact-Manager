@@ -48,6 +48,11 @@ public abstract class User {
         return id;
     }
 
+    /**
+     * Sets the unique identifier of the user.
+     * 
+     * @param id The user ID to set.
+     */
     public void setId(int id) {
         this.id = id;
     }
@@ -97,22 +102,47 @@ public abstract class User {
         return role;
     }
 
+    /**
+     * Sets the username of the user.
+     * 
+     * @param username The username to set.
+     */
     public void setUsername(String username) {
         this.username = username;
     }
 
+    /**
+     * Sets the first name of the user.
+     * 
+     * @param firstName The first name to set.
+     */
     public void setFirstName(String firstName) {
         this.firstName = firstName;
     }
 
+    /**
+     * Sets the last name of the user.
+     * 
+     * @param lastName The last name to set.
+     */
     public void setLastName(String lastName) {
         this.lastName = lastName;
     }
 
+    /**
+     * Sets the hashed password of the user.
+     * 
+     * @param passwordHash The password hash to set.
+     */
     public void setPassword(String passwordHash) {
         this.passwordHash = passwordHash;
     }
 
+    /**
+     * Sets the role of the user.
+     * 
+     * @param role The user role to set.
+     */
     public void setRole(Role role) {
         this.role = role;
     }

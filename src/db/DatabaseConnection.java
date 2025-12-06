@@ -22,7 +22,6 @@ import java.sql.SQLException;
  * <li>Host: localhost:3306</li>
  * <li>Driver: MySQL Connector/J (com.mysql.cj.jdbc.Driver)</li>
  * </ul>
- * </p>
  * 
  * @author Group 10
  * @version 1.0

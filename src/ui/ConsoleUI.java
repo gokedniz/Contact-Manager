@@ -26,7 +26,8 @@ import java.util.Map;
  * </p>
  * 
  * <p>
- * <strong>User Roles & Permissions:</strong>
+ * <strong>User Roles and Permissions:</strong>
+ * </p>
  * <ul>
  * <li><strong>Tester:</strong> View only</li>
  * <li><strong>Junior Developer:</strong> View, edit names only, undo</li>
@@ -35,7 +36,6 @@ import java.util.Map;
  * <li><strong>Manager:</strong> All permissions + user management + statistics
  * + activity logs</li>
  * </ul>
- * </p>
  * 
  * @author Group 10
  * @version 1.0
@@ -48,6 +48,9 @@ public class ConsoleUI {
     private User currentUser;
     private List<Integer> currentMenuActions;
 
+    /**
+     * Constructs a new ConsoleUI instance with required services.
+     */
     public ConsoleUI() {
         this.helper = new ConsoleHelper();
         this.authService = new AuthenticationService();

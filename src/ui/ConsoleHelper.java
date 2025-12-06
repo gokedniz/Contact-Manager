@@ -27,7 +27,6 @@ import java.util.Scanner;
  * <li>Animated horizontal bar charts for data visualization</li>
  * <li>Screen management (clear, pause on input)</li>
  * </ul>
- * </p>
  * 
  * @author Group 10
  * @version 1.0
@@ -43,7 +42,7 @@ public class ConsoleHelper {
     public static final String WHITE = "\u001B[37m";
     public static final String BOLD = "\u001B[1m";
 
-    private Scanner scanner;
+    private final Scanner scanner;
 
     public ConsoleHelper() {
         this.scanner = new Scanner(System.in);
@@ -492,11 +491,18 @@ public class ConsoleHelper {
         System.out.println();
     }
 
-    // --- INTRO METOTLARI (Aşağıyı değiştirmene gerek yok) ---
+    /**
+     * Animates the intro ASCII art and developer team credits.
+     * 
+     * <p>
+     * Displays the project and group name in ASCII art with delays for dramatic
+     * effect.
+     * Also shows developer names in ASCII art blocks.
+     * </p>
+     */
     public static void animateIntro() {
         System.out.println(CYAN);
         try {
-            // --- 1. KISIM: DERS VE PROJE ADI ---
             String[] header = {
                     "   ______ __  __ ____  ______    _____ __ __ _____ ",
                     "  / ____//  |/  // __ \\/ ____/   |__  // // /|__  /",
@@ -511,7 +517,6 @@ public class ConsoleHelper {
                     "/_/   /_/ |_|\\____/ \\____//_____/ \\____/  /_/     /____/ "
             };
 
-            // --- 2. KISIM: GRUP ADI ---
             String[] group = {
                     "   ______ ____   ____  __  __ ____      ___   ____ ",
                     "  / ____// __ \\ / __ \\/ / / // __ \\    <  /  / __ \\",
@@ -532,9 +537,6 @@ public class ConsoleHelper {
 
             Thread.sleep(600);
 
-            // --- 3. KISIM: İSİMLER (ASCII) ---
-
-            // GOKDENIZ DEMIRCIOGLU
             printNameBlock(new String[] {
                     "   ______ ____  __ __ ____  _______   __ __ ____ ",
                     "  / ____// __ \\/ //_// __ \\/ ____/ | / // //_  /",
@@ -548,7 +550,6 @@ public class ConsoleHelper {
                     "/_____/_____/_/  /_//_/   /_/ |_|\\____//_/ \\____/\\____//_____/__(_)   "
             });
 
-            // KEREM IRFANOGLU
             printNameBlock(new String[] {
                     "    __ __ ______ ____  ______ __  __",
                     "   / //_// ____// __ \\/ ____//  |/  /",
@@ -562,7 +563,6 @@ public class ConsoleHelper {
                     "/___/ /_/ |_/_/    /_/  |_|/_/ |_/ \\____/\\____//_____/__(_)   "
             });
 
-            // TAHA SOGUT
             printNameBlock(new String[] {
                     "  ______ ___     __  __ ___ ",
                     " /_  __//   |   / / / //   |",
@@ -576,7 +576,6 @@ public class ConsoleHelper {
                     "/____/ \\____/ \\____/ \\____/  /_/    "
             });
 
-            // AYSENUR GULFEM KOMURCU
             printNameBlock(new String[] {
                     "    ___ __  __ _____ ______ _   __ __  __ ____ ",
                     "   /   |\\ \\/ // ___// ____// | / // / / // __ \\",
@@ -606,6 +605,13 @@ public class ConsoleHelper {
         }
     }
 
+    /**
+     * Helper method to print lines with a delay between each line.
+     * 
+     * @param lines
+     * @param delay
+     * @throws InterruptedException
+     */
     private static void printWithDelay(String[] lines, int delay) throws InterruptedException {
         for (String line : lines) {
             System.out.println(line);
@@ -613,6 +619,12 @@ public class ConsoleHelper {
         }
     }
 
+    /**
+     * Helper method to print a block of names with a delay between each line.
+     * 
+     * @param lines
+     * @throws InterruptedException
+     */
     private static void printNameBlock(String[] lines) throws InterruptedException {
         System.out.println();
         for (String line : lines) {
@@ -622,15 +634,22 @@ public class ConsoleHelper {
         Thread.sleep(1500);
     }
 
+    /**
+     * Animates the outro ASCII art and developer team credits.
+     * 
+     * <p>
+     * Displays the project and group name in ASCII art with delays for dramatic
+     * effect.
+     * Also shows developer names in ASCII art blocks.
+     * </p>
+     */
     public static void animateOutro() {
-        // Start music immediately with the credits
-        outro.Eyfel.startMusic();
+        outro.Eiffel.startMusic();
 
         System.out.println(CYAN);
         try {
             System.out.println("\n\n" + "=".repeat(60));
 
-            // --- SPECIAL THANKS ---
             String[] specialThanks = {
                     "   _____ ____  _________________    __    ______  __  ___    _   ____ __ _____ ",
                     "  / ___// __ \\/ ____/ ____/  _/   |  / /   /_  __/ / / /   |  / | / // //_// ___/",
@@ -643,8 +662,6 @@ public class ConsoleHelper {
             System.out.println("=".repeat(60) + "\n");
             Thread.sleep(1000);
 
-            // --- ASST. PROF. ---
-            // Biraz daha küçük bir font ile unvan
             String[] asstProf = {
                     "    ___   _____ _____ ______      ____  ____  ____  ______",
                     "   /   | / ___// ___//_  __/     / __ \\/ __ \\/ __ \\/ ____/",
@@ -656,7 +673,6 @@ public class ConsoleHelper {
 
             Thread.sleep(500);
 
-            // --- ILKTAN AR ---
             printNameBlock(new String[] {
                     "    ____ __  __ __ ______  ___    _   __     ___    ____ ",
                     "   /  _// / / //_//_  __/ /   |  / | / /    /   |  / __ \\",
@@ -667,7 +683,6 @@ public class ConsoleHelper {
 
             Thread.sleep(1000);
 
-            // --- AND ---
             String[] andText = {
                     "             ___    _   __ ____ ",
                     "            /   |  / | / // __ \\",
@@ -679,7 +694,6 @@ public class ConsoleHelper {
 
             Thread.sleep(1000);
 
-            // --- FATIH GOLGE ---
             printNameBlock(new String[] {
                     "    ______ ___  ______ ____ __  __   ______ ______ __    ______ ______",
                     "   / ____//   |/_  __//  _// / / /  / ____// __  // /   / ____// ____/",
@@ -690,7 +704,6 @@ public class ConsoleHelper {
 
             Thread.sleep(1500);
 
-            // --- GOODBYE ---
             String[] goodbye = {
                     "   ______ ____  ____  ____  ____  __  __ ______",
                     "  / ____// __ \\/ __ \\/ __ \\/ __ ) \\ \\/ // ____/",

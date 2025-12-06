@@ -26,7 +26,6 @@ public class DatabaseSetup {
      *   <li>sd (Senior Developer)</li>
      *   <li>man (Manager)</li>
      * </ul>
-     * </p>
      */
     public static void updatePasswordsToHash() {
         System.out.println("Updating plain text passwords to hashes...");

@@ -3,18 +3,52 @@ package intro;
 import java.io.IOException;
 import java.util.Random;
 
+
 /**
- * Handles the "New Year" animation sequence (Intro).
+ * Class for displaying a New Year animation in the console.
+ * 
+ * <p>
+ * The animation features a Christmas tree, presents, and falling snow using
+ * ANSI escape codes for colors.
+ * Users can skip the animation by pressing 'q' followed by Enter.
+ * </p>
+ * 
+ * @author Group 10
+ * @version 1.0
  */
-public class YeniYilAnimasyon {
-    // ANSI Color codes (works if terminal supports it)
+public class NewYearAnimation {
+
+    /**
+     * ANSI escape codes for console colors.
+     */
     public static final String RESET = "\u001B[0m";
+    /**
+     * ANSI escape code for green text.
+     */
     public static final String GREEN = "\u001B[32m";
+    /**
+     * ANSI escape code for red text.
+     */
     public static final String RED = "\u001B[31m";
+    /**
+     * ANSI escape code for yellow text.
+     */
     public static final String YELLOW = "\u001B[33m";
+    /**
+     * ANSI escape code for blue text.
+     */
     public static final String BLUE = "\u001B[34m";
+    /**
+     * ANSI escape code for magenta text.
+     */
     public static final String MAGENTA = "\u001B[35m";
+    /**
+     * ANSI escape code for cyan text.
+     */
     public static final String CYAN = "\u001B[36m";
+    /**
+     * ANSI escape code for dark brown text.
+     */
     public static final String DARK_BROWN = "\u001B[38;5;94m";
 
     /**
@@ -108,7 +142,7 @@ public class YeniYilAnimasyon {
         // ------------------------
         // 2) SNOW ASCII (for overlay)
         // ------------------------
-        String[] kar = new String[] {
+        String[] snow = new String[] {
                 "",
                 "",
                 "",
@@ -209,12 +243,12 @@ public class YeniYilAnimasyon {
                     }
 
                     // Snow overlay
-                    int karRowIndex = r - Math.max(0, (art.length - kar.length) / 2);
-                    if (karRowIndex >= 0 && karRowIndex < kar.length) {
-                        String karLine = kar[karRowIndex];
+                    int snowRowIndex = r - Math.max(0, (art.length - snow.length) / 2);
+                    if (snowRowIndex >= 0 && snowRowIndex < snow.length) {
+                        String snowLine = snow[snowRowIndex];
                         StringBuilder over = new StringBuilder();
-                        for (int i = 0; i < Math.min(karLine.length(), width); i++) {
-                            char kc = karLine.charAt(i);
+                        for (int i = 0; i < Math.min(snowLine.length(), width); i++) {
+                            char kc = snowLine.charAt(i);
                             if (kc != ' ' && rand.nextDouble() < (step * 0.10))
                                 over.append(kc);
                             else
@@ -232,7 +266,7 @@ public class YeniYilAnimasyon {
         // 3) FINAL SNOWFLAKE: 2 seconds
         // ------------------------
         clear();
-        for (String line : kar)
+        for (String line : snow)
             System.out.println(line);
 
         try {
@@ -241,4 +275,5 @@ public class YeniYilAnimasyon {
             e.printStackTrace();
         }
     }
+
 }

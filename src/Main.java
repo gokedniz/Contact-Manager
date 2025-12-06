@@ -22,6 +22,6 @@ public class Main {
         intro.IntroManager.playIntro();
         new ConsoleUI().start();
         ui.ConsoleHelper.animateOutro();
-        outro.Eyfel.playOutro();
+        outro.Eiffel.playOutro();
     }
 }

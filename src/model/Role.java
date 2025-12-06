@@ -10,9 +10,21 @@ package model;
  * @version 1.0
  */
 public enum Role {
+    /**
+     * Role for Testers.
+     */
     TESTER,
+    /**
+     * Role for Junior Developers.
+     */
     JUNIOR_DEVELOPER,
+    /**
+     * Role for Senior Developers.
+     */
     SENIOR_DEVELOPER,
+    /**
+     * Role for Managers.
+     */
     MANAGER;
 
     /**

@@ -11,10 +11,12 @@ import java.sql.SQLException;
 /**
  * Data Access Object (DAO) for managing User entities in the database.
  * 
- * <p>This class handles all database operations related to users, including authentication,
+ * <p>
+ * This class handles all database operations related to users, including authentication,
  * user creation, updates, deletion, and user role management. It supports different user
  * types (Tester, JuniorDeveloper, SeniorDeveloper, Manager) and automatically instantiates
- * the correct user subclass based on the role stored in the database.</p>
+ * the correct user subclass based on the role stored in the database.
+ * </p>
  * 
  * @author Group 10
  * @version 1.0
