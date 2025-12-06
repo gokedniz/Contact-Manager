@@ -7,20 +7,15 @@ import java.sql.SQLException;
 /**
  * Singleton class for managing database connections.
  * 
- * <p>
- * Provides a single, reusable connection to the MySQL database using the
- * Singleton pattern.
- * Automatically reconnects if the connection is closed. Connection details are
- * hardcoded
- * and should be externalized in production environments.
- * </p>
+ * <p>Provides a single, reusable connection to the MySQL database using the Singleton pattern.
+ * Automatically reconnects if the connection is closed. Connection details are hardcoded
+ * and should be externalized in production environments.</p>
  * 
- * <p>
- * <strong>Connection Details:</strong>
+ * <p><strong>Connection Details:</strong>
  * <ul>
- * <li>Database: cmpe343_project</li>
- * <li>Host: localhost:3306</li>
- * <li>Driver: MySQL Connector/J (com.mysql.cj.jdbc.Driver)</li>
+ *   <li>Database: cmpe343_project</li>
+ *   <li>Host: localhost:3306</li>
+ *   <li>Driver: MySQL Connector/J (com.mysql.cj.jdbc.Driver)</li>
  * </ul>
  * </p>
  * 
@@ -41,7 +36,7 @@ public class DatabaseConnection {
             // Load MySQL Driver
             Class.forName("com.mysql.cj.jdbc.Driver");
             this.connection = DriverManager.getConnection(URL, USER, PASSWORD);
-
+            System.out.println("Database connection established successfully.");
         } catch (ClassNotFoundException | SQLException e) {
             System.err.println("Database connection failed: " + e.getMessage());
             e.printStackTrace();
@@ -51,10 +46,8 @@ public class DatabaseConnection {
     /**
      * Gets the singleton instance of DatabaseConnection.
      * 
-     * <p>
-     * Lazily initializes the connection on first call. If the connection is closed,
-     * automatically re-establishes it with synchronized access for thread-safety.
-     * </p>
+     * <p>Lazily initializes the connection on first call. If the connection is closed,
+     * automatically re-establishes it with synchronized access for thread-safety.</p>
      * 
      * @return The singleton DatabaseConnection instance.
      */

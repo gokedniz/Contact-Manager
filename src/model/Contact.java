@@ -41,7 +41,7 @@ public class Contact {
      * @param email          The email address of the contact.
      * @param linkedinUrl    The LinkedIn URL of the contact.
      * @param birthDate      The birth date of the contact.
-     * @param gender         The gender of the contact (M/F).
+     * @param gender         The gender of the contact (K/E).
      */
     public Contact(int id, String firstName, String middleName, String lastName, String nickname,
             String phonePrimary, String phoneSecondary, String email, String linkedinUrl, Date birthDate,
@@ -71,7 +71,7 @@ public class Contact {
      * @param email          The email address of the contact.
      * @param linkedinUrl    The LinkedIn URL of the contact.
      * @param birthDate      The birth date of the contact.
-     * @param gender         The gender of the contact (M/F).
+     * @param gender         The gender of the contact (K/E).
      */
     public Contact(String firstName, String middleName, String lastName, String nickname,
             String phonePrimary, String phoneSecondary, String email, String linkedinUrl, Date birthDate,
@@ -264,7 +264,7 @@ public class Contact {
     /**
      * Gets the gender of the contact.
      * 
-     * @return The gender (M/F).
+     * @return The gender (K/E).
      */
     public String getGender() {
         return gender;
@@ -273,7 +273,7 @@ public class Contact {
     /**
      * Sets the gender of the contact.
      * 
-     * @param gender The gender (M/F).
+     * @param gender The gender (K/E).
      */
     public void setGender(String gender) {
         this.gender = gender;
