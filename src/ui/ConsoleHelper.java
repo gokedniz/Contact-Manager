@@ -404,26 +404,26 @@ public class ConsoleHelper {
      * Reads gender input from the user.
      * 
      * <p>
-     * Accepts 'K' (Kadın/Female) or 'E' (Erkek/Male), case-insensitive.
+     * Accepts 'M' (Male) or 'F' (Female), case-insensitive.
      * Returns null if input is empty.
      * </p>
      * 
      * @param prompt The prompt to display.
-     * @return "K" for female, "E" for male, or null if empty.
+     * @return "M" for male, "F" for female, or null if empty.
      */
     public String readGender(String prompt) {
         while (true) {
-            String input = readString(prompt + " (K/E)");
+            String input = readString(prompt + " (M/F)");
             if (input.isEmpty()) {
                 return null;
             }
-            if (input.equalsIgnoreCase("K")) {
-                return "K";
+            if (input.equalsIgnoreCase("M")) {
+                return "M";
             }
-            if (input.equalsIgnoreCase("E")) {
-                return "E";
+            if (input.equalsIgnoreCase("F")) {
+                return "F";
             }
-            printError("Invalid gender. Please enter 'K' or 'E'.");
+            printError("Invalid gender. Please enter 'M' or 'F'.");
         }
     }
 

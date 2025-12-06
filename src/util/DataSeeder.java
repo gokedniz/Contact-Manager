@@ -70,7 +70,7 @@ public class DataSeeder {
                                         email,
                                         "linkedin.com/in/" + firstName.toLowerCase() + lastName.toLowerCase(),
                                         null, // birth date
-                                        random.nextBoolean() ? "E" : "K" // gender
+                                        random.nextBoolean() ? "M" : "F" // gender
                         );
 
                         dao.addContact(c);
