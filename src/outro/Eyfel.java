@@ -9,7 +9,6 @@ import java.util.concurrent.TimeUnit;
  */
 public class Eyfel {
 
-    // --- ANSI Codes ---
     public static final String ANSI_RESET = "\u001B[0m";
 
     // Original Eyfel tones
