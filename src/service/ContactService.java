@@ -24,7 +24,6 @@ import java.util.List;
  *   <li>Update: Senior Developer and Manager (full), Junior Developer (names only)</li>
  *   <li>Delete: Senior Developer and Manager only</li>
  * </ul>
- * </p>
  * 
  * @author Group 10
  * @version 1.0
@@ -35,6 +34,9 @@ public class ContactService {
     private dao.ActivityLogDAO activityLogDAO;
     private command.CommandManager commandManager;
 
+    /**
+     * Constructs a new ContactService with required DAOs and CommandManager.
+     */
     public ContactService() {
         this.contactDAO = new ContactDAO();
         this.activityLogDAO = new dao.ActivityLogDAO();
@@ -147,7 +149,6 @@ public class ContactService {
      *   <li>"Contacts with Phone": Count of contacts with phone numbers</li>
      *   <li>"Email Domains": Map of email domain frequencies</li>
      * </ul>
-     * </p>
      * 
      * @return A Map containing statistics about contacts.
      */
@@ -215,9 +216,9 @@ public class ContactService {
      * <ul>
      *   <li>Tester: Denied</li>
      *   <li>Junior Developer: Can only update names (first, middle, last, nickname)</li>
-     *   <li>Senior Developer & Manager: Full update allowed</li>
+     *   <li>Senior Developer and Manager: Full update allowed</li>
      * </ul>
-     * Operation is logged and can be undone.</p>
+     * Operation is logged and can be undone.
      * 
      * @param user The user performing the update.
      * @param contact The contact with updated information.

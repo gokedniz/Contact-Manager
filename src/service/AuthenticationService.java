@@ -24,6 +24,9 @@ public class AuthenticationService {
     private dao.ActivityLogDAO activityLogDAO;
     private command.CommandManager commandManager;
 
+    /**
+     * Constructs a new AuthenticationService with required DAOs and CommandManager.
+     */
     public AuthenticationService() {
         this.userDAO = new UserDAO();
         this.activityLogDAO = new dao.ActivityLogDAO();

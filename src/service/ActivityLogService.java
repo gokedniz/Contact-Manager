@@ -17,6 +17,9 @@ import java.util.List;
 public class ActivityLogService {
     private ActivityLogDAO activityLogDAO;
 
+    /**
+     * Constructs a new ActivityLogService with a default ActivityLogDAO.
+     */
     public ActivityLogService() {
         this.activityLogDAO = new ActivityLogDAO();
     }
